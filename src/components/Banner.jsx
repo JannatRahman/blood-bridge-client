@@ -5,11 +5,11 @@ import { BiDollar } from 'react-icons/bi';
 
 export default function Banner() {
   return (
-    <section className="relative min-h-[600px] w-full overflow-hidden rounded-b-[40px] bg-black text-white">
+    <section className=" mb-5 relative min-h-[600px] w-full overflow-hidden rounded-b-[40px] bg-black text-white">
       {/* Background Image with Dark Overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 mix-blend-lighten"
-        style={{ backgroundImage: "url('/banner.jpg')" }} // Ensure your image is in the public folder as banner.jpg
+        style={{ backgroundImage: "url('/images/banner.png')" }} // Ensure your image is in the public folder as banner.jpg
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80" />
 
