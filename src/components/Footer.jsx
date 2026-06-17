@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { FaArrowUp } from "react-icons/fa";
+import Lottie from "lottie-react";
+import animationData from "../../public/logo.json";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -18,25 +20,16 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
         
         {/* UPPER MAIN SECTION */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 items-start">
+        <div className="grid  md:grid-cols-12  pb-12 ">
           
-          {/* LEFT SIDE: LOGO ICON */}
-          <div className="md:col-span-5 flex justify-start">
-            {/* Replicated geometric grid layout from reference image */}
-            <div className="relative w-32 h-32 flex items-center justify-center">
-              {/* Center Diamond */}
-              <div className="w-5 h-5 bg-white transform rotate-45 absolute" />
-              {/* Top & Bottom Diamonds */}
-              <div className="w-5 h-5 bg-white transform rotate-45 absolute -top-1" />
-              <div className="w-5 h-5 bg-white transform rotate-45 absolute -bottom-1" />
-              {/* Left & Right Diamonds */}
-              <div className="w-5 h-5 bg-white transform rotate-45 absolute -left-1" />
-              <div className="w-5 h-5 bg-white transform rotate-45 absolute -right-1" />
-              {/* Corner Squares */}
-              <div className="w-5 h-5 bg-white absolute top-4 left-4" />
-              <div className="w-5 h-5 bg-white absolute top-4 right-4" />
-              <div className="w-5 h-5 bg-white absolute bottom-4 left-4" />
-              <div className="w-5 h-5 bg-white absolute bottom-4 right-4" />
+          {/* LEFT SIDE: LOTTIE ANIMATION LOGO */}
+          <div className="md:col-span-5 flex justify-start items-center ">
+            <div className="w-50 h-50 flex items-center justify-between">
+              <Lottie
+                animationData={animationData}
+                loop={true}
+                style={{ width: 200, height: 200 }}
+              />
             </div>
           </div>
 
