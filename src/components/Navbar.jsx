@@ -7,11 +7,12 @@ import { FaUser, FaSignOutAlt, FaThLarge, FaBars, FaTimes } from "react-icons/fa
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Logo from "./Logo";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -27,7 +28,10 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
+    setIsLoggedIn(false)
+    setDropdownOpen(false)
     router.push("/");
+    toast('Logged Out')
   };
 
   const mockUser = {
@@ -49,11 +53,11 @@ export default function Navbar() {
     // Applied your brand color #7D0A0A with a sleek backdrop blur
     <nav className="sticky top-0 z-50 w-full border-b border-white/10 backdrop-blur-md px-6 py-4" style={{ backgroundColor: 'rgba(125, 10, 10, 0.92)' }}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
+
         {/* LOGO SECTION */}
         <div className="flex items-center gap-3">
           <div className="  h-8   flex items-center justify-center transform rotate-12">
-            <Logo/>
+            <Logo />
           </div>
           <span className="text-lg font-semibold tracking-tight text-white font-sans">
             Blood Bridge
@@ -65,31 +69,39 @@ export default function Navbar() {
           <Link href="/" className={getLinkClass("/")}>
             Home
           </Link>
-          <Link href="/events" className={getLinkClass("/events")}>
-            About
+          <Link href="/donor-requests" className={getLinkClass("/donor-requests")}>
+            Donor Requests
           </Link>
-          <Link href="/company-1" className={getLinkClass("/company-1")}>
-            Company
+          <Link href="/search-donor" className={getLinkClass("/search-donor")}>
+            Search Donor
           </Link>
-          <Link href="/company-2" className={getLinkClass("/company-2")}>
-            Company
-          </Link>
+
         </div>
 
         {/* RIGHT ACTIONS */}
         <div className="hidden md:flex items-center gap-4">
-          <Link href="/get-yours">
-            <button className="relative inline-flex items-center justify-center text-xs font-medium text-white bg-black/20 hover:bg-black/40 h-10 px-6 rounded-full border border-white/10 transition shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+          
+           {!isLoggedIn && (<div>
+              <button 
+            onClick={() => setIsLoggedIn(true)}
+            className="relative inline-flex items-center justify-center text-xs font-medium text-white bg-black/20 hover:bg-black/40 h-10 px-6 rounded-full border border-white/10 transition shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] active:scale-[0.98]">
               Login
             </button>
-          </Link>
+            <Link 
+            href='/register'
+            className="relative inline-flex items-center justify-center text-xs font-medium text-white bg-black/20 hover:bg-black/40 h-10 px-6 rounded-full border border-white/10 transition shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+             Sign Up
+            </Link>
+            </div>)}
+        
 
           {/* USER DROPDOWN */}
-          <div className="relative" ref={dropdownRef}>
+          {isLoggedIn && (<div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center transition-transform hover:scale-105 outline-none focus:outline-none cursor-pointer"
             >
+              <p className="p-3">Welcome, {mockUser.name}</p>
               <Image
                 width={36}
                 height={36}
@@ -110,7 +122,7 @@ export default function Navbar() {
                 </div>
 
                 <Link
-                  href="/dashboard"
+                  href="/dashboard/donor"
                   onClick={() => setDropdownOpen(false)}
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-100 hover:text-white hover:bg-white/10 transition"
                 >
@@ -119,7 +131,7 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  href="/dashboard"
+                  href={`/dashboard/${mockUser.role}`}
                   onClick={() => setDropdownOpen(false)}
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-100 hover:text-white hover:bg-white/10 transition"
                 >
@@ -138,11 +150,12 @@ export default function Navbar() {
                 </button>
               </div>
             )}
-          </div>
+          </div>)}
         </div>
 
         {/* MOBILE MENU TOGGLE */}
         <div className="flex md:hidden items-center gap-4">
+          
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="text-rose-100 hover:text-white text-xl focus:outline-none"
@@ -183,7 +196,7 @@ export default function Navbar() {
           >
             Company
           </Link>
-          
+
           <div className="border-t border-white/10 my-1"></div>
 
           <Link href="/get-yours" onClick={() => setMobileMenuOpen(false)} className="w-full">
