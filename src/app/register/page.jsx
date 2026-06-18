@@ -22,6 +22,8 @@ import {
   Eye,
   EyeClosed
 } from '@gravity-ui/icons';
+import { useForm } from 'react-hook-form';
+import Image from 'next/image';
 
 const DISTRICTS = [
   { id: "1", name: "Cumilla" },
@@ -140,7 +142,7 @@ const UPAZILAS = [
   { id: "47", districtId: "5", name: "Subarnachar" },
   { id: "48", districtId: "5", name: "Kabirhat" },
   { id: "49", districtId: "5", name: "Senbug" },
-  { id: "50", districtId: "5", name: "Chatkhil" },
+  { id: "50", districtId: "5", textValue: "Chatkhil" },
   { id: "51", districtId: "5", name: "Sonaimori" },
   { id: "52", districtId: "6", name: "Haimchar" },
   { id: "53", districtId: "6", name: "Kachua" },
@@ -207,8 +209,12 @@ const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const GENDERS = ['Male', 'Female', 'Other'];
 
 export default function RegistrationForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
@@ -240,17 +246,62 @@ export default function RegistrationForm() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Submitting Registration:', formData);
+  // Local handler to preview local files chosen from the gallery
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+
+  const onSubmit = async (data) => {
+    setIsUploading(true);
+    try {
+      let imageUrl = "";
+      const file = data.image?.[0];
+
+      if (file) {
+        // Build FormData structure for ImgBB API
+        const imgFormData = new FormData();
+        imgFormData.append('image', file);
+
+        // Send to ImgBB (using a public trial API key; replace with your own environment variable)
+        const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY_HERE"; 
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: 'POST',
+          body: imgFormData
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          imageUrl = result.data.url;
+        } else {
+          throw new Error("ImgBB upload failed");
+        }
+      }
+
+      // Merge the structured textual states with your new image URL
+      const finalSubmissionData = {
+        ...formData,
+        imageUrl: imageUrl
+      };
+
+      console.log("Successfully Uploaded & Compiled Form Data:", finalSubmissionData);
+      // Execute your API submission logic here
+      
+    } catch (error) {
+      console.error("Error during image submission flow:", error);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm p-8 border border-2 border-[#7D0A0A]">
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-[#dd3333] tracking-tight mb-2">
+          <h1 className="text-3xl font-extrabold text-[#7D0A0A] tracking-tight mb-2">
             Join the Lifesaving Community
           </h1>
           <p className="text-sm text-gray-500">
@@ -258,20 +309,44 @@ export default function RegistrationForm() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-          {/* Avatar Area */}
+          {/* Re-designed Image upload workflow */}
           <div className="flex flex-col items-center justify-center mb-6">
-            <div className="relative group cursor-pointer">
-              <Avatar
-                icon={<Person className="w-8 h-8 text-gray-400" />}
-                className="w-24 h-24 bg-orange-50/50 border border-dashed border-gray-200"
-              />
-              <div className="absolute bottom-0 right-0 bg-white p-1.5 rounded-full shadow-md border border-gray-100 flex items-center justify-center">
+            <label htmlFor="image" className="relative group cursor-pointer flex flex-col items-center">
+              <div className="w-24 h-24 rounded-full overflow-hidden border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center relative">
+                {previewImage ? (
+                  <Image 
+                    src={previewImage} 
+                    alt="Preview Avatar" 
+                    fill 
+                    className="object-cover"
+                  />
+                ) : (
+                  <Person className="w-8 h-8 text-gray-400" />
+                )}
+                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full">
+                  <Camera className="text-white w-5 h-5" />
+                </div>
+              </div>
+              <div className="absolute bottom-6 right-0 bg-white p-1.5 rounded-full shadow-md border border-gray-100 flex items-center justify-center pointer-events-none">
                 <Camera className="text-gray-600 w-3.5 h-3.5" />
               </div>
-            </div>
-            <span className="text-sm font-semibold text-gray-700 mt-2">Profile Photo</span>
+              <span className="text-sm font-semibold text-gray-700 mt-2">Profile Photo</span>
+            </label>
+            
+            {/* Hidden Native input configured to trigger device upload safely */}
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              className="hidden"
+              {...register("image", { 
+                required: 'Image is required',
+                onChange: handleImageChange 
+              })}
+            />
+            {errors.image && <p className="text-xs text-red-500 mt-1">{errors.image.message}</p>}
           </div>
 
           {/* Form Fields Grid */}
@@ -281,7 +356,7 @@ export default function RegistrationForm() {
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-700">Full Name</span>
               <Input
-                type="text"
+                id='name'
                 placeholder="Donor"
                 startContent={<Person className="text-gray-400 w-4 h-4" />}
                 value={formData.fullName}
@@ -325,7 +400,7 @@ export default function RegistrationForm() {
               />
             </div>
 
-            {/* Gender Field via v3 Compound Design */}
+            {/* Gender Field */}
             <div className="flex flex-col gap-1.5">
               <Select 
                 placeholder="Select Gender" 
@@ -351,7 +426,7 @@ export default function RegistrationForm() {
               </Select>
             </div>
 
-            {/* District Field via v3 Compound Design */}
+            {/* District Field */}
             <div className="flex flex-col gap-1.5">
               <Select 
                 placeholder="Select District" 
@@ -377,7 +452,7 @@ export default function RegistrationForm() {
               </Select>
             </div>
 
-            {/* Upazila Dependent Field via v3 Compound Design */}
+            {/* Upazila Dependent Field */}
             <div className="flex flex-col gap-1.5">
               <Select 
                 placeholder={formData.district ? "Select Upazila" : "Choose district first"} 
@@ -427,7 +502,7 @@ export default function RegistrationForm() {
                     onClick={() => handleChange('bloodGroup', group)}
                     className={`h-11 rounded-xl font-bold border text-sm transition-all flex items-center justify-center
                       ${isSelected
-                        ? 'border-[#dd3333] bg-[#dd3333] text-white shadow-sm'
+                        ? 'border-[#7D0A0A] bg-[#BF3131] text-white shadow-sm'
                         : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
                       }`}
                   >
@@ -506,14 +581,15 @@ export default function RegistrationForm() {
           {/* Submit Action */}
           <Button
             type="submit"
-            className="w-full h-12 bg-[#e53935] text-white font-bold text-base rounded-xl hover:bg-[#d32f2f] transition-colors mt-4 shadow-sm"
+            isLoading={isUploading}
+            className="w-full h-12 bg-[#7D0A0A] text-white font-bold text-base rounded-xl hover:bg-[#BF3131] transition-colors mt-4 shadow-sm"
           >
-            Complete Registration
+            {isUploading ? "Uploading Image..." : "Complete Registration"}
           </Button>
 
           <div className="text-center text-sm text-gray-500 mt-4">
             Already have an account?{' '}
-            <a href="#login" className="text-[#e53935] font-bold hover:underline">
+            <a href="#login" className="text-[#7D0A0A] font-bold hover:underline">
               Login here
             </a>
           </div>
