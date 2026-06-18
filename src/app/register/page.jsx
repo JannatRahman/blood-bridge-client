@@ -5,6 +5,7 @@ import {
   Input,
   Select,
   ListBox,
+  Label,
   Button,
   Avatar
 } from '@heroui/react';
@@ -150,56 +151,56 @@ const UPAZILAS = [
   { id: "58", districtId: "6", name: "Matlab North" },
   { id: "59", districtId: "6", name: "Faridgonj" },
   { id: "60", districtId: "7", name: "Lakshmipur Sadar" },
-  { id: "61", districtId: "7", name: "Kamalnagar", bnName: "কমলনগর" },
-  { id: "62", districtId: "7", name: "Raipur", bnName: "রায়পুর" },
-  { id: "63", districtId: "7", name: "Ramgati", bnName: "রামগতি" },
-  { id: "64", districtId: "7", name: "Ramganj", bnName: "রামগঞ্জ" },
-  { id: "65", districtId: "8", name: "Rangunia", bnName: "রাঙ্গুনিয়া" },
-  { id: "66", districtId: "8", name: "Sitakunda", bnName: "সীতাকুন্ড" },
-  { id: "67", districtId: "8", name: "Mirsharai", bnName: "মীরসরাই" },
-  { id: "68", districtId: "8", name: "Patiya", bnName: "পটিয়া" },
-  { id: "69", districtId: "8", name: "Sandwip", bnName: "সন্দ্বীপ" },
-  { id: "70", districtId: "8", name: "Banshkhali", bnName: "বাঁশখালী" },
-  { id: "71", districtId: "8", name: "Boalkhali", bnName: "বোয়ালখালী" },
-  { id: "72", districtId: "8", name: "Anwara", bnName: "আনোয়ারা" },
-  { id: "73", districtId: "8", name: "Chandanaish", bnName: "চন্দনাইশ" },
-  { id: "74", districtId: "8", name: "Satkania", bnName: "সাতকানিয়া" },
-  { id: "75", districtId: "8", name: "Lohagara", bnName: "লোহাগাড়া" },
-  { id: "76", districtId: "8", name: "Hathazari", bnName: "হাটহাজারী" },
-  { id: "77", districtId: "8", name: "Fatikchhari", bnName: "ফটিকছড়ি" },
-  { id: "78", districtId: "8", name: "Raozan", bnName: "রাউজান" },
-  { id: "79", districtId: "8", name: "Karnafuli", bnName: "কর্ণফুলী" },
-  { id: "80", districtId: "9", name: "Coxsbazar Sadar", bnName: "কক্সবাজার সদর" },
-  { id: "81", districtId: "9", name: "Chakaria", bnName: "চকরিয়া" },
-  { id: "82", districtId: "9", name: "Kutubdia", bnName: "কুতুবদিয়া" },
-  { id: "83", districtId: "9", name: "Ukhiya", bnName: "উখিয়া" },
-  { id: "84", districtId: "9", name: "Moheshkhali", bnName: "মহেশখালী" },
-  { id: "85", districtId: "9", name: "Pekua", bnName: "পেকুয়া" },
-  { id: "86", districtId: "9", name: "Ramu", bnName: "রামু" },
-  { id: "87", districtId: "9", name: "Teknaf", bnName: "টেকনাফ" },
-  { id: "88", districtId: "10", name: "Khagrachhari Sadar", bnName: "খাগড়াছড়ি সদর" },
-  { id: "89", districtId: "10", name: "Dighinala", bnName: "ডিঘীনালা" },
-  { id: "90", districtId: "10", name: "Panchari", bnName: "পানছড়ি" },
-  { id: "91", districtId: "10", name: "Laxmichhari", bnName: "লক্ষীছড়ি" },
-  { id: "92", districtId: "10", name: "Mohalchari", bnName: "মহালছড়ি" },
-  { id: "93", districtId: "10", name: "Manikchari", bnName: "মানিকছড়ি" },
-  { id: "94", districtId: "10", name: "Ramgarh", bnName: "রামগড়" },
-  { id: "95", districtId: "10", name: "Matiranga", bnName: "মাটিরাঙ্গা" },
-  { id: "96", districtId: "10", name: "Guimara", bnName: "গুইমারা" },
-  { id: "97", districtId: "11", name: "Bandarban Sadar", bnName: "বান্দরবান সদর" },
-  { id: "98", districtId: "11", name: "Alikadam", bnName: "আলীকদম" },
-  { id: "99", districtId: "11", name: "Naikhongchhari", bnName: "নাইক্ষ্যংছড়ি" },
-  { id: "100", districtId: "11", name: "Rowangchhari", bnName: "রোয়াংছড়ি" },
-  { id: "101", districtId: "11", name: "Lama", bnName: "লামা" },
-  { id: "102", districtId: "11", name: "Ruma", bnName: "রুমা" },
-  { id: "103", districtId: "11", name: "Thanchi", bnName: "থানচি" },
-  { id: "104", districtId: "12", name: "Belkuchi", bnName: "বেলকুচি" },
-  { id: "105", districtId: "12", name: "Chauhali", bnName: "চৌহালি" },
-  { id: "106", districtId: "12", name: "Kamarkhand", bnName: "কামারখন্দ" },
-  { id: "107", districtId: "12", name: "Kazipur", bnName: "কাজীপুর" },
-  { id: "108", districtId: "12", name: "Raigonj", bnName: "রায়গঞ্জ" },
-  { id: "109", districtId: "12", name: "Shahjadpur", bnName: "শাহজাদপুর" },
-  { id: "110", districtId: "12", name: "Sirajganj Sadar", bnName: "সিরাজগঞ্জ সদর" }
+  { id: "61", districtId: "7", name: "Kamalnagar" },
+  { id: "62", districtId: "7", name: "Raipur" },
+  { id: "63", districtId: "7", name: "Ramgati" },
+  { id: "64", districtId: "7", name: "Ramganj" },
+  { id: "65", districtId: "8", name: "Rangunia" },
+  { id: "66", districtId: "8", name: "Sitakunda" },
+  { id: "67", districtId: "8", name: "Mirsharai" },
+  { id: "68", districtId: "8", name: "Patiya" },
+  { id: "69", districtId: "8", name: "Sandwip" },
+  { id: "70", districtId: "8", name: "Banshkhali" },
+  { id: "71", districtId: "8", name: "Boalkhali" },
+  { id: "72", districtId: "8", name: "Anwara" },
+  { id: "73", districtId: "8", name: "Chandanaish" },
+  { id: "74", districtId: "8", name: "Satkania" },
+  { id: "75", districtId: "8", name: "Lohagara" },
+  { id: "76", districtId: "8", name: "Hathazari" },
+  { id: "77", districtId: "8", name: "Fatikchhari" },
+  { id: "78", districtId: "8", name: "Raozan" },
+  { id: "79", districtId: "8", name: "Karnafuli" },
+  { id: "80", districtId: "9", name: "Coxsbazar Sadar" },
+  { id: "81", districtId: "9", name: "Chakaria" },
+  { id: "82", districtId: "9", name: "Kutubdia" },
+  { id: "83", districtId: "9", name: "Ukhiya" },
+  { id: "84", districtId: "9", name: "Moheshkhali" },
+  { id: "85", districtId: "9", name: "Pekua" },
+  { id: "86", districtId: "9", name: "Ramu" },
+  { id: "87", districtId: "9", name: "Teknaf" },
+  { id: "88", districtId: "10", name: "Khagrachhari Sadar" },
+  { id: "89", districtId: "10", name: "Dighinala" },
+  { id: "90", districtId: "10", name: "Panchari" },
+  { id: "91", districtId: "10", name: "Laxmichhari" },
+  { id: "92", districtId: "10", name: "Mohalchari" },
+  { id: "93", districtId: "10", name: "Manikchari" },
+  { id: "94", districtId: "10", name: "Ramgarh" },
+  { id: "95", districtId: "10", name: "Matiranga" },
+  { id: "96", districtId: "10", name: "Guimara" },
+  { id: "97", districtId: "11", name: "Bandarban Sadar" },
+  { id: "98", districtId: "11", name: "Alikadam" },
+  { id: "99", districtId: "11", name: "Naikhongchhari" },
+  { id: "100", districtId: "11", name: "Rowangchhari" },
+  { id: "101", districtId: "11", name: "Lama" },
+  { id: "102", districtId: "11", name: "Ruma" },
+  { id: "103", districtId: "11", name: "Thanchi" },
+  { id: "104", districtId: "12", name: "Belkuchi" },
+  { id: "105", districtId: "12", name: "Chauhali" },
+  { id: "106", districtId: "12", name: "Kamarkhand" },
+  { id: "107", districtId: "12", name: "Kazipur" },
+  { id: "108", districtId: "12", name: "Raigonj" },
+  { id: "109", districtId: "12", name: "Shahjadpur" },
+  { id: "110", districtId: "12", name: "Sirajganj Sadar" }
 ];
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -281,13 +282,13 @@ export default function RegistrationForm() {
               <span className="text-sm font-semibold text-gray-700">Full Name</span>
               <Input
                 type="text"
-                variant="bordered"
                 placeholder="Donor"
                 startContent={<Person className="text-gray-400 w-4 h-4" />}
                 value={formData.fullName}
                 onChange={(e) => handleChange('fullName', e.target.value)}
+                className="w-full"
                 classNames={{ 
-                  inputWrapper: "h-12 border-gray-200 focus-within:border-gray-400" 
+                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400" 
                 }}
               />
             </div>
@@ -297,13 +298,13 @@ export default function RegistrationForm() {
               <span className="text-sm font-semibold text-gray-700">Email Address</span>
               <Input
                 type="email"
-                variant="bordered"
                 placeholder="donor@gmail.com"
                 startContent={<Envelope className="text-gray-400 w-4 h-4" />}
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
+                className="w-full"
                 classNames={{ 
-                  inputWrapper: "h-12 border-gray-200 focus-within:border-gray-400" 
+                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400" 
                 }}
               />
             </div>
@@ -313,35 +314,30 @@ export default function RegistrationForm() {
               <span className="text-sm font-semibold text-gray-700">Phone Number</span>
               <Input
                 type="tel"
-                variant="bordered"
                 placeholder="01822334455"
                 startContent={<Smartphone className="text-gray-400 w-4 h-4" />}
                 value={formData.phoneNumber}
                 onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                className="w-full"
                 classNames={{
-                  inputWrapper: "h-12 border-pink-200 bg-blue-50/40 focus-within:border-pink-300"
+                  inputWrapper: "h-12 border border-pink-200 bg-blue-50/40 focus-within:border-pink-300"
                 }}
               />
             </div>
 
-            {/* Gender */}
+            {/* Gender Field via v3 Compound Design */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-gray-700">Gender</span>
-              <Select
+              <Select 
+                placeholder="Select Gender" 
+                value={formData.gender} 
+                onChange={(val) => handleChange('gender', val)}
                 className="w-full"
-                placeholder="Select Gender"
-                selectedKeys={formData.gender ? [formData.gender] : []}
-                onSelectionChange={(keys) => {
-                  const selectedValue = Array.from(keys)[0]?.toString() || '';
-                  handleChange('gender', selectedValue);
-                }}
               >
-                <Select.Trigger className="h-12 rounded-xl border border-gray-200 bg-transparent p-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Person className="text-gray-400 w-4 h-4" />
-                    <Select.Value />
-                  </div>
-                  <Select.Indicator />
+                <Label className="text-sm font-semibold text-gray-700">Gender</Label>
+                <Select.Trigger className="h-12 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left">
+                  <Person className="text-gray-400 w-4 h-4" />
+                  <Select.Value />
+                  <Select.Indicator className="ml-auto" />
                 </Select.Trigger>
                 <Select.Popover>
                   <ListBox>
@@ -355,30 +351,25 @@ export default function RegistrationForm() {
               </Select>
             </div>
 
-            {/* District */}
+            {/* District Field via v3 Compound Design */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-gray-700">District</span>
-              <Select
+              <Select 
+                placeholder="Select District" 
+                value={formData.district} 
+                onChange={(val) => handleChange('district', val)}
                 className="w-full"
-                placeholder="Select District"
-                selectedKeys={formData.district ? [formData.district] : []}
-                onSelectionChange={(keys) => {
-                  const selectedValue = Array.from(keys)[0]?.toString() || '';
-                  handleChange('district', selectedValue);
-                }}
               >
-                <Select.Trigger className="h-12 rounded-xl border border-gray-200 bg-transparent p-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="text-gray-400 w-4 h-4" />
-                    <Select.Value />
-                  </div>
-                  <Select.Indicator />
+                <Label className="text-sm font-semibold text-gray-700">District</Label>
+                <Select.Trigger className="h-12 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left">
+                  <MapPin className="text-gray-400 w-4 h-4" />
+                  <Select.Value />
+                  <Select.Indicator className="ml-auto" />
                 </Select.Trigger>
                 <Select.Popover>
                   <ListBox>
                     {DISTRICTS.map((dist) => (
                       <ListBox.Item id={dist.id} key={dist.id} textValue={dist.name}>
-                        {dist.name} {dist.bnName ? `(${dist.bnName})` : ''}
+                        {dist.name}
                       </ListBox.Item>
                     ))}
                   </ListBox>
@@ -386,33 +377,36 @@ export default function RegistrationForm() {
               </Select>
             </div>
 
-            {/* Upazila Dependent Select */}
+            {/* Upazila Dependent Field via v3 Compound Design */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-gray-700">Upazila</span>
-              <Select
+              <Select 
+                placeholder={formData.district ? "Select Upazila" : "Choose district first"} 
+                value={formData.upazila} 
+                onChange={(val) => handleChange('upazila', val)}
+                disabledKeys={!formData.district ? ["disabled-state"] : []}
                 className="w-full"
-                placeholder={formData.district ? "Select Upazila" : "Choose district first"}
-                selectedKeys={formData.upazila ? [formData.upazila] : []}
-                onSelectionChange={(keys) => {
-                  const selectedValue = Array.from(keys)[0]?.toString() || '';
-                  handleChange('upazila', selectedValue);
-                }}
-                isDisabled={!formData.district}
               >
-                <Select.Trigger className="h-12 rounded-xl border border-gray-200 bg-transparent p-3 flex items-center justify-between disabled:opacity-50">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="text-gray-400 w-4 h-4" />
-                    <Select.Value />
-                  </div>
-                  <Select.Indicator />
+                <Label className="text-sm font-semibold text-gray-700">Upazila</Label>
+                <Select.Trigger 
+                  className={`h-12 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left ${!formData.district ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}`}
+                >
+                  <MapPin className="text-gray-400 w-4 h-4" />
+                  <Select.Value />
+                  <Select.Indicator className="ml-auto" />
                 </Select.Trigger>
                 <Select.Popover>
                   <ListBox>
-                    {filteredUpazilas.map((up) => (
-                      <ListBox.Item id={up.id} key={up.id} textValue={up.name}>
-                        {up.name} {up.bnName ? `(${up.bnName})` : ''}
+                    {formData.district ? (
+                      filteredUpazilas.map((up) => (
+                        <ListBox.Item id={up.id} key={up.id} textValue={up.name}>
+                          {up.name}
+                        </ListBox.Item>
+                      ))
+                    ) : (
+                      <ListBox.Item id="disabled-state" textValue="Choose district first">
+                        Choose district first
                       </ListBox.Item>
-                    ))}
+                    )}
                   </ListBox>
                 </Select.Popover>
               </Select>
@@ -452,7 +446,6 @@ export default function RegistrationForm() {
               <span className="text-sm font-semibold text-gray-700">Password</span>
               <Input
                 type={showPassword ? "text" : "password"}
-                variant="bordered"
                 placeholder="........"
                 startContent={<Lock className="text-gray-400 w-4 h-4 flex-shrink-0" />}
                 endContent={
@@ -470,8 +463,9 @@ export default function RegistrationForm() {
                 }
                 value={formData.password}
                 onChange={(e) => handleChange('password', e.target.value)}
+                className="w-full"
                 classNames={{ 
-                  inputWrapper: "h-12 border-gray-200 focus-within:border-gray-400 flex items-center justify-between",
+                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400 flex items-center justify-between",
                   input: "w-full" 
                 }}
               />
@@ -482,7 +476,6 @@ export default function RegistrationForm() {
               <span className="text-sm font-semibold text-gray-700">Confirm Password</span>
               <Input
                 type={showConfirmPassword ? "text" : "password"}
-                variant="bordered"
                 placeholder="........"
                 startContent={<ArrowChevronRight className="text-gray-400 w-4 h-4 flex-shrink-0" />}
                 endContent={
@@ -500,8 +493,9 @@ export default function RegistrationForm() {
                 }
                 value={formData.confirmPassword}
                 onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                className="w-full"
                 classNames={{ 
-                  inputWrapper: "h-12 border-gray-200 focus-within:border-gray-400 flex items-center justify-between",
+                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400 flex items-center justify-between",
                   input: "w-full" 
                 }}
               />
