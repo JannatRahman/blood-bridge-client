@@ -19,12 +19,13 @@ import {
   ArrowChevronRight,
   Eye,
   EyeClosed,
-  Heart,    
+  Heart,
   Shield,
   Camera
 } from '@gravity-ui/icons';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
+import { authClient } from '@/lib/auth-client';
 
 const DISTRICTS = [
   { id: "1", name: "Cumilla" }, { id: "2", name: "Feni" }, { id: "3", name: "Brahmanbaria" },
@@ -130,7 +131,7 @@ export default function RegistrationForm() {
       confirmPassword: '',
     }
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
@@ -159,15 +160,17 @@ export default function RegistrationForm() {
 
   const onSubmit = async (data) => {
     setIsUploading(true);
+
     try {
       let imageUrl = "";
       const file = data.image?.[0];
 
+      // 1. First, upload the image if it exists to get the URL string
       if (file) {
         const imgFormData = new FormData();
         imgFormData.append('image', file);
 
-        const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API; 
+        const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API;
         const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
           method: 'POST',
           body: imgFormData
@@ -181,15 +184,36 @@ export default function RegistrationForm() {
         }
       }
 
-      const finalSubmissionData = {
-        ...data,
-        imageUrl: imageUrl
-      };
 
-      console.log("Successfully Uploaded & Compiled Form Data:", finalSubmissionData);
-      
+      const { data: signUpData, error: signUpError } = await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.fullName,
+        role: data.role,
+        image: imageUrl || undefined,
+
+
+        metadata: {
+          phoneNumber: data.phoneNumber,
+          gender: data.gender,
+          district: data.district,
+          districtId: data.districtId,
+          upazila: data.upazila,
+          upazilaId: data.upazilaId,
+          role: data.role,
+          bloodGroup: data.bloodGroup,
+        }
+      });
+
+      if (signUpError) {
+       toast.error('Registration failed')
+
+      } else {
+        toast.success('Registration successful')
+      }
+
     } catch (error) {
-      console.error("Error during image submission flow:", error);
+      console.error("Error during registration flow:", error);
     } finally {
       setIsUploading(false);
     }
@@ -215,10 +239,10 @@ export default function RegistrationForm() {
             <label htmlFor="image" className="relative group cursor-pointer flex flex-col items-center">
               <div className="w-24 h-24 rounded-full overflow-hidden border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center relative">
                 {previewImage ? (
-                  <Image 
-                    src={previewImage} 
-                    alt="Preview Avatar" 
-                    fill 
+                  <Image
+                    src={previewImage}
+                    alt="Preview Avatar"
+                    fill
                     className="object-cover"
                   />
                 ) : (
@@ -233,15 +257,15 @@ export default function RegistrationForm() {
               </div>
               <span className="text-sm font-semibold text-gray-700 mt-2">Profile Photo</span>
             </label>
-            
+
             <input
               type="file"
               id="image"
               accept="image/*"
               className="hidden"
-              {...register("image", { 
+              {...register("image", {
                 required: 'Image is required',
-                onChange: handleImageChange 
+                onChange: handleImageChange
               })}
             />
             {errors.image && <p className="text-xs text-red-500 mt-1">{errors.image.message}</p>}
@@ -260,10 +284,13 @@ export default function RegistrationForm() {
                 className="w-full"
                 isInvalid={!!errors.fullName}
                 errorMessage={errors.fullName?.message}
-                classNames={{ 
-                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400" 
+                classNames={{
+                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400"
                 }}
               />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
             {/* Email Address */}
@@ -277,20 +304,23 @@ export default function RegistrationForm() {
                 className="w-full"
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
-                classNames={{ 
-                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400" 
+                classNames={{
+                  inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400"
                 }}
               />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
             {/* Phone Number */}
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-700">Phone Number</span>
               <Input
-                {...register("phoneNumber", { 
-                  required: 'Number is required', 
-                  maxLength: { value: 11, message: "Must be exactly 11 digits" }, 
-                  minLength: { value: 11, message: "Must be exactly 11 digits" } 
+                {...register("phoneNumber", {
+                  required: 'Number is required',
+                  maxLength: { value: 11, message: "Must be exactly 11 digits" },
+                  minLength: { value: 11, message: "Must be exactly 11 digits" }
                 })}
                 type="tel"
                 placeholder="01822334455"
@@ -302,13 +332,17 @@ export default function RegistrationForm() {
                   inputWrapper: "h-12 border border-pink-200 bg-blue-50/40 focus-within:border-pink-300"
                 }}
               />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
             {/* Gender Field */}
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-700">Gender</span>
-              <Select 
-                placeholder="Select Gender" 
+              <Select
+                aria-label="Gender"
+                placeholder="Select Gender"
                 className="w-full"
                 isInvalid={!!errors.gender}
                 errorMessage={errors.gender?.message}
@@ -332,13 +366,17 @@ export default function RegistrationForm() {
               </Select>
               {/* Register hidden input field for form binding natively */}
               <input type="hidden" {...register("gender", { required: 'Gender is required' })} />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
             {/* District Field */}
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-700">District</span>
-              <Select 
-                placeholder="Select District" 
+              <Select
+                aria-label="District"
+                placeholder="Select District"
                 className="w-full"
                 isInvalid={!!errors.districtId}
                 errorMessage={errors.districtId?.message}
@@ -368,13 +406,17 @@ export default function RegistrationForm() {
                 </Select.Popover>
               </Select>
               <input type="hidden" {...register("districtId", { required: 'District is required' })} />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
             {/* Upazila Dependent Field */}
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-700">Upazila</span>
-              <Select 
-                placeholder={watchDistrictId ? "Select Upazila" : "Choose district first"} 
+              <Select
+                aria-label="Upazila"
+                placeholder={watchDistrictId ? "Select Upazila" : "Choose district first"}
                 disabledKeys={!watchDistrictId ? ["disabled-state"] : []}
                 className="w-full"
                 isInvalid={!!errors.upazilaId}
@@ -387,7 +429,7 @@ export default function RegistrationForm() {
                   setValue('upazila', upazila?.name || '');
                 }}
               >
-                <Select.Trigger 
+                <Select.Trigger
                   className={`h-12 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left ${!watchDistrict ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}`}
                 >
                   <MapPin className="text-gray-400 w-4 h-4" />
@@ -411,6 +453,9 @@ export default function RegistrationForm() {
                 </Select.Popover>
               </Select>
               <input type="hidden" {...register("upazilaId", { required: 'Upazila is required' })} />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
           </div>
@@ -418,6 +463,7 @@ export default function RegistrationForm() {
           {/* Role Selection */}
           <div className="flex flex-col gap-2">
             <span className="text-sm font-semibold text-gray-700">Select Your Role</span>
+
             <div className="grid grid-cols-2 gap-4">
               {ROLES.map((role) => {
                 const isSelected = watchRole === role;
@@ -477,10 +523,10 @@ export default function RegistrationForm() {
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-700">Password</span>
               <Input
-                {...register("password", { 
-                  required: 'Password is required', 
-                  minLength: { value: 6, message: "Minimum 6 characters" }, 
-                  maxLength: { value: 20, message: "Maximum 20 characters" } 
+                {...register("password", {
+                  required: 'Password is required',
+                  minLength: { value: 6, message: "Minimum 6 characters" },
+                  maxLength: { value: 20, message: "Maximum 20 characters" }
                 })}
                 type={showPassword ? "text" : "password"}
                 placeholder="........"
@@ -497,18 +543,21 @@ export default function RegistrationForm() {
                 className="w-full"
                 isInvalid={!!errors.password}
                 errorMessage={errors.password?.message}
-                classNames={{ 
+                classNames={{
                   inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400 flex items-center justify-between",
-                  input: "w-full" 
+                  input: "w-full"
                 }}
               />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
             {/* Confirm Password Field */}
             <div className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-700">Confirm Password</span>
               <Input
-                {...register("confirmPassword", { 
+                {...register("confirmPassword", {
                   required: 'Please confirm your password',
                   validate: (value) => value === watchPassword || "Passwords do not match"
                 })}
@@ -527,11 +576,14 @@ export default function RegistrationForm() {
                 className="w-full"
                 isInvalid={!!errors.confirmPassword}
                 errorMessage={errors.confirmPassword?.message}
-                classNames={{ 
+                classNames={{
                   inputWrapper: "h-12 border border-gray-200 focus-within:border-gray-400 flex items-center justify-between",
-                  input: "w-full" 
+                  input: "w-full"
                 }}
               />
+              {
+                errors.name && <p className="text-red-500">{errors.name.message}</p>
+              }
             </div>
 
           </div>
