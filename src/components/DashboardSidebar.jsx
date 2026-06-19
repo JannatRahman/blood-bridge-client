@@ -1,28 +1,50 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { FaCalendarAlt, FaHome, FaPlus, FaSignOutAlt, FaUsers } from 'react-icons/fa';
+import { FaCalendarAlt, FaHome, FaPlus, FaSignOutAlt, FaUsers, FaUserSecret } from 'react-icons/fa';
 import Logo from './Logo';
 import { useSession } from '@/lib/auth-client';
-import { MdDashboard, MdPublic } from 'react-icons/md';
+import { MdDashboard, MdOutlinePublic, MdPublic } from 'react-icons/md';
 
 const DashboardSidebar = () => {
   const { data: session } = useSession();
   const handleLogout = () => {
 
   }
-  const role = session?.user?.role;
+  
 
   const volunteerMenu = [
     { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/volunteer' },
 
-    { key: "profile", label: "Profile", icon: FaUsers, href: '/dashboard/volunteer/profile' },
+    { key: "volunteer-profile", label: "Volunteer Profile", icon: FaUsers, href: '/dashboard/volunteer/profile' },
 
-    // { key: "my-request", label: "My Requests", icon: FaPlus, href: '/dashboard/volunteer/my-request' },
-
-    // { key: "create-request", label: "Create Request", icon: FaCalendarAlt, href: '/dashboard/volunteer/create-request' },
     { key: "public-request", label: "Public Request", icon: MdPublic, href: '/dashboard/volunteer/public-request' },
+    { key: "profile", label: "Profile", icon: FaUsers, href: '/dashboard/volunteer/profile' },
   ]
+
+  const donorMenu = [
+    { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/donor' },
+    { key: "donor-profile", label: "Donor Profile", icon: FaUsers, href: '/dashboard/donor/profile' },
+    { key: "my-request", label: "My Requests", icon: FaPlus, href: '/dashboard/donor/my-request' },
+    { key: "create-request", label: "Create Request", icon: FaCalendarAlt, href: '/dashboard/donor/create-request' },
+  ]
+  const adminMenu = [
+    { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/admin' },
+    { key: "admin-profile", label: "Admin Profile", icon: FaUsers, href: '/dashboard/admin/profile' },
+    { key: "my-request", label: "My Requests", icon: FaPlus, href: '/dashboard/donor/my-request' },
+    { key: "create-request", label: "Create Request", icon: FaCalendarAlt, href: '/dashboard/donor/create-request' },
+    { key: "all-users", label: "All Users", icon: FaUserSecret, href: '/dashboard/admin/all-users' },
+    { key: "public-request", label: "Public Request", icon: MdOutlinePublic, href: '/dashboard/admin/public-request' },
+  ]
+
+  
+
+  const menuItems = role === 'Volunteer' ? volunteerMenu : role === 'Donor' ? donorMenu : role === 'admin' ? adminMenu : null;
+
+  // const role = session?.user?.role;
+
+  const role = 'Volunteer' 
+
   return (
     <aside className="w-64 h-screen border-r border-white/5">
       <div className="h-full flex flex-col bg-[#7D0A0A] backdrop-blur-xl">
@@ -60,7 +82,7 @@ const DashboardSidebar = () => {
           <p className="text-sm text-slate-300 font-bold uppercase tracking-widest px-3 pb-2">Menu</p>
 
           {
-            volunteerMenu?.map(({ key, label, icon: Icon, href }) => {
+            menuItems?.map(({ key, label, icon: Icon, href }) => {
               return (
                 <Link
                   key={key}

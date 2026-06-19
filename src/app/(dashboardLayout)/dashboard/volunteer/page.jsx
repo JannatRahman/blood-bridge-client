@@ -10,7 +10,7 @@ const VolunteerDashboard = () => {
     bloodRequests: 45,
   };
 
-  const isPremium = false; // Toggle for testing layout
+  const isPremium = true; // Toggle for testing layout
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8 space-y-8">
