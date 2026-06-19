@@ -26,6 +26,9 @@ import {
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { authClient } from '@/lib/auth-client';
+import { uploadImage } from '../utils/uploadImage';
+import toast from 'react-hot-toast';
+import { redirect } from 'next/navigation';
 
 const DISTRICTS = [
   { id: "1", name: "Cumilla" }, { id: "2", name: "Feni" }, { id: "3", name: "Brahmanbaria" },
@@ -162,28 +165,9 @@ export default function RegistrationForm() {
     setIsUploading(true);
 
     try {
-      let imageUrl = "";
-      const file = data.image?.[0];
-
-      // 1. First, upload the image if it exists to get the URL string
-      if (file) {
-        const imgFormData = new FormData();
-        imgFormData.append('image', file);
-
-        const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API;
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-          method: 'POST',
-          body: imgFormData
-        });
-
-        const result = await response.json();
-        if (result.success) {
-          imageUrl = result.data.url;
-        } else {
-          throw new Error("ImgBB upload failed");
-        }
-      }
-
+     
+const imageFile = data.image[0];
+        const imageUrl = await uploadImage(imageFile)
 
       const { data: signUpData, error: signUpError } = await authClient.signUp.email({
         email: data.email,
@@ -212,11 +196,11 @@ export default function RegistrationForm() {
         toast.success('Registration successful')
       }
 
-    } catch (error) {
-      console.error("Error during registration flow:", error);
-    } finally {
-      setIsUploading(false);
-    }
+    } finally 
+     {
+      redirect('/')
+     }
+    
   };
 
   return (
@@ -225,7 +209,7 @@ export default function RegistrationForm() {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-[#7D0A0A] tracking-tight mb-2">
-            Join the Lifesaving Community
+            New Here? Register yourself.
           </h1>
           <p className="text-sm text-gray-500">
             Create an account to become a donor and save lives
@@ -599,7 +583,7 @@ export default function RegistrationForm() {
 
           <div className="text-center text-sm text-gray-500 mt-4">
             Already have an account?{' '}
-            <a href="#login" className="text-[#7D0A0A] font-bold hover:underline">
+            <a href="/login" className="text-[#7D0A0A] font-bold hover:underline">
               Login here
             </a>
           </div>
