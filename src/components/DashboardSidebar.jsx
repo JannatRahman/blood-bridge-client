@@ -38,12 +38,12 @@ const DashboardSidebar = () => {
   ]
 
   
+  const role = session?.user?.role;
 
   const menuItems = role === 'Volunteer' ? volunteerMenu : role === 'Donor' ? donorMenu : role === 'admin' ? adminMenu : null;
 
-  // const role = session?.user?.role;
 
-  const role = 'Volunteer' 
+   
 
   return (
     <aside className="w-64 h-screen border-r border-white/5">
