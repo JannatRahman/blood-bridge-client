@@ -23,7 +23,7 @@ const DashboardSidebar = () => {
   ]
 
   const donorMenu = [
-    { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/donor' },
+    { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/donor/donor-dashboard' },
     { key: "donor-profile", label: "Donor Profile", icon: FaUsers, href: '/dashboard/donor/donor-profile' },
     { key: "my-request", label: "My Requests", icon: FaPlus, href: '/dashboard/donor/my-request' },
     { key: "create-request", label: "Create Request", icon: FaCalendarAlt, href: '/dashboard/donor/create-request' },
