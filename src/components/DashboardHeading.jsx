@@ -1,6 +1,5 @@
 import React from 'react';
-import { BiEdit } from 'react-icons/bi';
-import { CgProfile } from 'react-icons/cg';
+
 
 const DashboardHeading = ({title, description}) => {
   return (

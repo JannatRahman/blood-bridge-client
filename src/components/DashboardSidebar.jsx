@@ -16,7 +16,7 @@ const DashboardSidebar = () => {
   const volunteerMenu = [
     { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/volunteer' },
 
-    { key: "volunteer-profile", label: "Volunteer Profile", icon: FaUsers, href: '/dashboard/volunteer/profile' },
+    { key: "profile", label: " Profile", icon: FaUsers, href: '/dashboard/volunteer/profile' },
 
     { key: "public-request", label: "Public Request", icon: MdPublic, href: '/dashboard/volunteer/public-request' },
     { key: "profile", label: "Profile", icon: FaUsers, href: '/dashboard/volunteer/profile' },
@@ -24,13 +24,13 @@ const DashboardSidebar = () => {
 
   const donorMenu = [
     { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/donor/donor-dashboard' },
-    { key: "donor-profile", label: "Donor Profile", icon: FaUsers, href: '/dashboard/donor/donor-profile' },
+    { key: "profile", label: " Profile", icon: FaUsers, href: '/dashboard/donor/profile' },
     { key: "my-request", label: "My Requests", icon: FaPlus, href: '/dashboard/donor/my-request' },
     { key: "create-request", label: "Create Request", icon: FaCalendarAlt, href: '/dashboard/donor/create-request' },
   ]
   const adminMenu = [
     { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/admin' },
-    { key: "admin-profile", label: "Admin Profile", icon: FaUsers, href: '/dashboard/admin/profile' },
+    { key: "profile", label: " Profile", icon: FaUsers, href: '/dashboard/admin/profile' },
     { key: "my-request", label: "My Requests", icon: FaPlus, href: '/dashboard/donor/my-request' },
     { key: "create-request", label: "Create Request", icon: FaCalendarAlt, href: '/dashboard/donor/create-request' },
     { key: "all-users", label: "All Users", icon: FaUserSecret, href: '/dashboard/admin/all-users' },
@@ -46,7 +46,7 @@ const DashboardSidebar = () => {
    
 
   return (
-    <aside className="w-64 h-screen border-r border-white/5">
+    <aside className="w-64 h-screen border-r  border-white/5">
       <div className="h-full flex flex-col bg-[#7D0A0A] backdrop-blur-xl">
         {/* Brand / Logo */}
         <div className="px-5 py-2 border-b border-white/5 flex items-center gap-3">
