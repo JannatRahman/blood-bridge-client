@@ -8,6 +8,6 @@ export const createRequest = async (data) => {
 }
 export const updateRequest = async (data, id) => {
   console.log(data, id)
-  const resData = await serverMutation(`/api/create-request/${id}`, 'PATCH', data);
+  const resData = await serverMutation(`/api/edit-request/${id}`, 'PATCH', data);
   return resData;
 }
