@@ -146,7 +146,7 @@ console.log(data);
   console.log(result);
   if(result.insertedId){
     toast.success('Donor Request Created Successfully...')
-    redirect('/dashboard/donor/my-request')
+    redirect('/requests')
   }
 
    

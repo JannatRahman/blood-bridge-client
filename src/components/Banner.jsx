@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@heroui/react'; // Adjust import path based on your HeroUI setup (e.g., '@nextui-org/react' if using the older package name)
 import { FiUsers, FiHeart, FiArrowRight, FiEye } from 'react-icons/fi';
 import { BiDollar } from 'react-icons/bi';
+import Link from 'next/link';
 
 export default function Banner() {
   return (
@@ -42,6 +43,7 @@ export default function Banner() {
             >
               Become a Donor
             </Button>
+            <Link href={'/search-donor'}>
             <Button 
               variant="bordered"
               className="border-neutral-500/50 hover:border-white text-white font-medium px-8 h-12 rounded-xl backdrop-blur-sm bg-white/5"
@@ -49,6 +51,7 @@ export default function Banner() {
             >
               Search Donors
             </Button>
+            </Link>
           </div>
         </div>
 

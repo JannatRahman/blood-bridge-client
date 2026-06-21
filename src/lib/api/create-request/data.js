@@ -5,4 +5,12 @@ export const myRequest = async (email) => {
   console.log(result);
 
   return result;
+};
+
+
+export const fetchDonationData = async () => {
+  const result = await serverFetch(`/api/donation-request`);
+  console.log(result);
+
+  return result;
 }

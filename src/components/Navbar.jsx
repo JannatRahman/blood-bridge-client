@@ -68,7 +68,7 @@ export default function Navbar() {
           <Link href="/requests" className={getLinkClass("/requests")}>
             Donation Requests
           </Link>
-          <Link href="/requests" className={getLinkClass("/requests")}>
+          <Link href="/search-donor" className={getLinkClass("/requests")}>
             Search Donors
           </Link>
            {session && session?.user && (
