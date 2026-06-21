@@ -6,11 +6,15 @@ import { Button, Card, Chip, Table, TableBody, TableCell, TableColumn, TableCont
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useSession } from '@/lib/auth-client';
 import { myRequest } from '@/lib/api/create-request/data';
+import EditRequestModal from '@/components/EditRequestModal';
 
 const DonorRequestPage = () => {
   const { data: session } = useSession();
   const [request, setRequest] = useState([]);
-  const [requestDonor, setRequestDonor] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingRequest, setEditingRequest] = useState(null);
+  const [requestDonor, setRequestDonor] = useState(false);
+  
 
   useEffect(() => {
     const receiveRequest = async () => {
@@ -22,7 +26,7 @@ const DonorRequestPage = () => {
     receiveRequest();
 
   }, [session])
-  console.log(request);
+
 
   return (
     <div>
@@ -71,15 +75,15 @@ const DonorRequestPage = () => {
                       <TableCell className="py-4 px-6 align-middle">
                         <div className="flex gap-2">
                           <div className="group relative flex items-center justify-center w-fit">
-                            <Button isIconOnly size="sm" radius="full" className="h-8 w-8 min-w-0 p-0 border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 hover:scale-[1.03] transition-all duration-200" onPress={() => { setEditingEvent({ ...req }); setIsModalOpen(true); }}><FaEdit size={12} /></Button>
-                            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 transition-all duration-150 rounded-lg bg-slate-950 border border-white/10 px-2 py-1 text-[10px] text-white group-hover:scale-100 font-semibold z-30 whitespace-nowrap shadow-xl">Edit Event</span>
+                            <Button isIconOnly size="sm" radius="full" className="h-8 w-8 min-w-0 p-0 border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 hover:scale-[1.03] transition-all duration-200" onPress={() => { setEditingRequest({ ...req }); setIsModalOpen(true); }}><FaEdit size={12} /></Button>
+                            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 transition-all duration-150 rounded-lg bg-slate-950 border border-white/10 px-2 py-1 text-[10px] text-white group-hover:scale-100 font-semibold z-30 whitespace-nowrap shadow-xl">Edit Request</span>
                           </div>
                           <div className="group relative flex items-center justify-center w-fit">
                             <Button isIconOnly size="sm" radius="full" className="h-8 w-8 min-w-0 p-0 border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:scale-[1.03] transition-all duration-200" onPress={() => {
                               setDeletedId(req._id)
                               setIsDeleteOpen(true)
                             }}><FaTrash size={12} /></Button>
-                            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 transition-all duration-150 rounded-lg bg-slate-950 border border-white/10 px-2 py-1 text-[10px] text-white group-hover:scale-100 font-semibold z-30 whitespace-nowrap shadow-xl">Delete Event</span>
+                            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 scale-0 transition-all duration-150 rounded-lg bg-slate-950 border border-white/10 px-2 py-1 text-[10px] text-white group-hover:scale-100 font-semibold z-30 whitespace-nowrap shadow-xl">Delete Request</span>
                           </div>
                         </div>
                       </TableCell>
@@ -92,6 +96,7 @@ const DonorRequestPage = () => {
           </div>
         </Card>
       </div>
+      <EditRequestModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} editingRequest={editingRequest}/>
     </div>
   );
 };
