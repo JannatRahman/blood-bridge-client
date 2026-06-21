@@ -2,7 +2,7 @@
 
 import { serverMutation } from "../server"
 
-export const createRequest = async () => {
+export const createRequest = async (data) => {
   const resData = await serverMutation('/api/create-request', 'POST', data);
   return resData;
 }

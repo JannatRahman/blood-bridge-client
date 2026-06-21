@@ -5,6 +5,7 @@ import { createRequest } from '@/lib/api/create-request/action';
 import { useSession } from '@/lib/auth-client';
 import { Envelope, Heart, MapPin, Person, Shield, Smartphone } from '@gravity-ui/icons';
 import { Button, Input, ListBox, Select, TextArea, Card } from '@heroui/react';
+import { redirect } from 'next/navigation';
 import React, { useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -114,7 +115,7 @@ const DonorCreateRequestPage = () => {
       donationDate: '',
       donationTime: '',
       requestMessage: '',
-      status: 'pending'
+      status: 'Inprogress'
     }
   });
 
@@ -135,14 +136,17 @@ const DonorCreateRequestPage = () => {
   }, [watchDistrictId]);
 
   const onSubmit =async (data) => {
-
+console.log(data);
   const updateData = {
     ...data
   }
 
+
   const result = await createRequest(updateData)
+  console.log(result);
   if(result.insertedId){
     toast.success('Donor Request Created Successfully...')
+    redirect('/dashboard/donor/my-request')
   }
 
    
@@ -182,6 +186,7 @@ const DonorCreateRequestPage = () => {
                 <div className="flex flex-col gap-1.5">
                   <span className="text-sm font-semibold text-gray-800">Requester Email</span>
                   <Input
+
                     readOnly
                     value={watch('requesterEmail')}
                     placeholder="authenticated-user@gmail.com"

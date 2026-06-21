@@ -9,7 +9,7 @@ const res = await fetch(`${baseUrl}${path}`,
   headers: {
     'Content-type': 'application/json'
   },
-  body: JSON.stringify()
+  body: JSON.stringify(data)
   }
 );
 return res.json(); 
