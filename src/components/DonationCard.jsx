@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 
 export default function DonationCard({ donation }) {
+  
   const currentDonation = donation;
 
   return (

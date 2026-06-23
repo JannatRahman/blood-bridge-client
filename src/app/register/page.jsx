@@ -29,6 +29,7 @@ import { authClient } from '@/lib/auth-client';
 import { uploadImage } from '../utils/uploadImage';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
+import { BsGoogle } from 'react-icons/bs';
 
 const DISTRICTS = [
   { id: "1", name: "Cumilla" }, { id: "2", name: "Feni" }, { id: "3", name: "Brahmanbaria" },
@@ -165,9 +166,9 @@ export default function RegistrationForm() {
     setIsUploading(true);
 
     try {
-     
-const imageFile = data.image[0];
-        const imageUrl = await uploadImage(imageFile)
+
+      const imageFile = data.image[0];
+      const imageUrl = await uploadImage(imageFile)
 
       const { data: signUpData, error: signUpError } = await authClient.signUp.email({
         email: data.email,
@@ -190,18 +191,22 @@ const imageFile = data.image[0];
       });
 
       if (signUpError) {
-       toast.error('Registration failed')
+        toast.error('Registration failed')
 
       } else {
         toast.success('Registration successful')
       }
 
-    } finally 
-     {
+    } finally {
       redirect('/')
-     }
-    
+    }
+
   };
+  const handleGoogle = async () => {
+    await authClient.signIn.social({
+      provider: 'google'
+    })
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -580,6 +585,16 @@ const imageFile = data.image[0];
           >
             {isUploading ? "Uploading Image..." : "Complete Registration"}
           </Button>
+
+          <div className="relative flex py-5 items-center">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="flex-shrink mx-3 text-gray-400 text-[10px] font-medium uppercase tracking-wider">Or </span>
+            <div className="flex-grow border-t border-gray-200"></div>
+
+          </div>
+          <Button
+            onClick={handleGoogle}
+            className="w-full h-11 bg-[#7A1111] hover:bg-[#5F0D0D] text-white font-bold rounded-md text-sm mt-2 transition-colors shadow-sm">Register with google <BsGoogle /></Button>
 
           <div className="text-center text-sm text-gray-500 mt-4">
             Already have an account?{' '}

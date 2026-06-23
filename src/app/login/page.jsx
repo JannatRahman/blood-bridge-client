@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { authClient } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { BsGoogle } from 'react-icons/bs';
 
 export default function LoginPage() {
 
@@ -29,6 +30,12 @@ export default function LoginPage() {
       redirect('/')
     }
   };
+
+  const handleGoogle = async () => {
+    await authClient.signIn.social({
+      provider: 'google'
+    })
+  }
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 p-4 md:p-8 font-sans relative overflow-hidden">
@@ -110,26 +117,23 @@ export default function LoginPage() {
           <div className="flex-grow border-t border-gray-200"></div>
           <span className="flex-shrink mx-3 text-gray-400 text-[10px] font-medium uppercase tracking-wider">Or Connect With</span>
           <div className="flex-grow border-t border-gray-200"></div>
-          
+
         </div>
 
         {/* Social Logins */}
         <div className="flex justify-center gap-3 mb-6">
-          <button type="button" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition shadow-sm">
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
-              <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.227C18.214 1.751 15.46 1 12.24 1c-6.075 0-11 4.925-11 11s4.925 11 11 11c6.34 0 10.564-4.455 10.564-10.75 0-.725-.078-1.275-.173-1.685H12.24z" />
-            </svg>
-          </button>
-          
-
-        </div>
         
+          <Button 
+          onClick={handleGoogle}
+          className="w-full h-11 bg-[#7A1111] hover:bg-[#5F0D0D] text-white font-bold rounded-md text-sm mt-2 transition-colors shadow-sm">Login with google <BsGoogle /></Button>
+        </div>
+
         <p className="text-center text-sm text-slate-600 mt-6">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-red-800 hover:text-red-900 font-semibold hover:underline">
-              Sign Up
-            </Link>
-          </p>
+          Don't have an account?{" "}
+          <Link href="/register" className="text-red-800 hover:text-red-900 font-semibold hover:underline">
+            Sign Up
+          </Link>
+        </p>
 
         {/* Info Footer */}
         <p className=" text-sm text-slate-600 mt-6  text-center leading-relaxed">

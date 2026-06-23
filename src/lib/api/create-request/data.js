@@ -8,9 +8,9 @@ export const myRequest = async (email) => {
 };
 
 
-export const fetchDonationData = async () => {
-  const result = await serverFetch(`/api/donation-request`);
-  console.log(result);
+export const fetchDonationData = async (query) => {
+  const result = await serverFetch(`/api/donation-request?${query.toString()}`);
+  // console.log(result);
 
   return result;
 }

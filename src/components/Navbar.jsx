@@ -32,10 +32,8 @@ export default function Navbar() {
   const handleLogout = async () => {
     await authClient.signOut();
     router.push("/");
-    toast('Logged Out')
+    toast('Logged Out');
   };
-
-  // console.log(role)
 
   const getLinkClass = (path) => {
     const base = "text-xs font-medium tracking-wide transition-all duration-200 px-5 py-2.5 rounded-full text-center";
@@ -46,13 +44,12 @@ export default function Navbar() {
   };
 
   return (
-    // Applied your brand color #7D0A0A with a sleek backdrop blur
     <nav className="sticky top-0 z-50 w-full border-b border-white/10 backdrop-blur-md px-6 py-4" style={{ backgroundColor: 'rgba(125, 10, 10, 0.92)' }}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
 
         {/* LOGO SECTION */}
         <div className="flex items-center gap-3">
-          <div className="  h-8   flex items-center justify-center transform rotate-12">
+          <div className="h-8 flex items-center justify-center transform rotate-12">
             <Logo />
           </div>
           <span className="text-lg font-semibold tracking-tight text-white font-sans">
@@ -60,7 +57,7 @@ export default function Navbar() {
           </span>
         </div>
 
-        {/* CENTER NAVIGATION LINKS */}
+        {/* CENTER NAVIGATION LINKS (DESKTOP) */}
         <div className="hidden md:flex items-center bg-black/30 border border-white/10 p-1 rounded-full shadow-inner">
           <Link href="/" className={getLinkClass("/")}>
             Home
@@ -68,23 +65,21 @@ export default function Navbar() {
           <Link href="/requests" className={getLinkClass("/requests")}>
             Donation Requests
           </Link>
-          <Link href="/search-donor" className={getLinkClass("/requests")}>
+          <Link href="/search-donor" className={getLinkClass("/search-donor")}>
             Search Donors
           </Link>
-           {session && session?.user && (
+          {session && session?.user && (
             <Link
-              href={`/dashboard/${session?.user?.role.toLowerCase()}`}
-              className={`text-sm font-medium transition-colors ${pathname.startsWith("/dashboard") ? "text-pink-500 font-semibold" : "text-slate-300 hover:text-white"}`}
+              href={`/funding`}
+              className={`text-xs font-medium tracking-wide transition-all duration-200 px-5 py-2.5 rounded-full text-center ${pathname.startsWith("/funding") ? "text-white bg-white/15" : "text-rose-200/70 hover:text-white"}`}
             >
-              Dashboard
+              Funding
             </Link>
           )}
         </div>
 
-        {/* RIGHT ACTIONS */}
+        {/* RIGHT ACTIONS (DESKTOP) */}
         <div className="hidden md:flex items-center gap-7">
-
-          {/* FIXED: Show Login/Signup ONLY when user is NOT logged in */}
           {!session && (
             <div className="flex gap-5">
               <Link href='/login'>
@@ -94,13 +89,12 @@ export default function Navbar() {
               </Link>
               <Link
                 href='/register'
-                className="relative inline-flex bg-[#BF3131] items-center justify-center text-sm font-medium text-white  hover:bg-[#7D0A0A] h-10 px-6 rounded-full border border-white/10 transition shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+                className="relative inline-flex bg-[#BF3131] items-center justify-center text-sm font-medium text-white hover:bg-[#7D0A0A] h-10 px-6 rounded-full border border-white/10 transition shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] active:scale-[0.98]">
                 Sign Up
               </Link>
             </div>
           )}
 
-          {/* FIXED: Show USER DROPDOWN ONLY when user IS logged in */}
           {session && session?.user && (
             <div className="relative" ref={dropdownRef}>
               <button
@@ -112,8 +106,7 @@ export default function Navbar() {
                   width={36}
                   height={36}
                   className="w-9 h-9 rounded-full object-cover border border-white/20 shadow-md"
-                  // FIXED: Added a default fallback string path if user image is missing or empty
-                  src={session.user.image || "/fallback-avatar.png"} 
+                  src={session.user.image || "/fallback-avatar.png"}
                   alt="avatar"
                 />
               </button>
@@ -129,37 +122,40 @@ export default function Navbar() {
                   </div>
 
                   <Link
-                    href="/dashboard/donor"
+                    href={`/dashboard/${session.user.role.toLowerCase()}`}
                     onClick={() => setDropdownOpen(false)}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-100 hover:text-white hover:bg-white/10 transition"
                   >
                     <FaThLarge className="text-rose-300 text-sm shrink-0" />
-                    <Link href='/dashboard'>My Dashboard</Link>
-                  </Link>
-
-                  <Link
-                    href={`/dashboard/${session.user.role}`}
-                    onClick={() => setDropdownOpen(false)}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-100 hover:text-white hover:bg-white/10 transition"
-                  >
-                    <FaUser className="text-rose-300 text-sm shrink-0" />
-                    <span>Profile Settings</span>
+                    <span>My Dashboard</span>
                   </Link>
 
                   <div className="border-t border-white/10 my-1.5" />
 
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-200 hover:text-white hover:bg-red-500/20 transition"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-200 hover:text-white hover:bg-red-500/20 transition cursor-pointer"
                   >
                     <FaSignOutAlt className="text-sm shrink-0" />
-                    <Link href='/login'>Log Out</Link>
+                    <span>Log Out</span>
                   </button>
                 </div>
               )}
             </div>
           )}
         </div>
+
+        {/* MOBILE HAMBURGER BUTTON (FIXED: Added this block) */}
+        <div className="flex md:hidden items-center">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="text-white text-xl p-2 focus:outline-none cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
+
       </div>
 
       {/* MOBILE DRAWER */}
@@ -180,22 +176,50 @@ export default function Navbar() {
             Donation Requests
           </Link>
           <Link
-            href="/dashboard"
+            href="/search-donor"
             onClick={() => setMobileMenuOpen(false)}
-            className="px-4 py-2 text-rose-200/80 text-sm"
+            className={`px-4 py-2 rounded-xl text-sm ${pathname === "/search-donor" ? "bg-white/15 text-white" : "text-rose-200/80"}`}
           >
-            Dashboard
+            Search Donors
           </Link>
+
+          {session && session?.user && (
+            <Link
+              href={`/dashboard/${session.user.role.toLowerCase()}`}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`px-4 py-2 rounded-xl text-sm ${pathname.startsWith("/dashboard") ? "bg-white/15 text-white" : "text-rose-200/80"}`}
+            >
+              Dashboard
+            </Link>
+          )}
 
           <div className="border-t border-white/10 my-1"></div>
 
-          {/* Optional: You can replicate the login state check for mobile menu here if desired */}
-          {!session?.user && (
-            <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="w-full">
-              <button className="w-full text-center text-xs font-medium text-white bg-white/10 py-3 rounded-xl border border-white/10">
-                Login
-              </button>
-            </Link>
+          {/* Authentication states for mobile drawer */}
+          {!session ? (
+            <div className="flex flex-col gap-2">
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="w-full">
+                <button className="w-full text-center text-xs font-medium text-white bg-white/10 py-3 rounded-xl border border-white/10 cursor-pointer">
+                  Login
+                </button>
+              </Link>
+              <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="w-full">
+                <button className="w-full text-center text-xs font-medium text-white bg-[#BF3131] py-3 rounded-xl border border-white/10 cursor-pointer">
+                  Sign Up
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                handleLogout();
+              }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-semibold text-rose-200 bg-red-500/10 hover:bg-red-500/20 transition cursor-pointer"
+            >
+              <FaSignOutAlt className="text-sm" />
+              <span>Log Out</span>
+            </button>
           )}
         </div>
       )}

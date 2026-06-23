@@ -1,7 +1,6 @@
 'use client'
 
-
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { MapPin } from "@gravity-ui/icons";
 import { Card, ListBox, Select } from "@heroui/react";
 import Image from "next/image";
@@ -115,15 +114,15 @@ const DonorProfile = () => {
   useEffect(() => {
     if (session?.user) {
       reset({
-        fullName: session.user.name || 'Graziele Lopes',
-        email: session.user.email || 'graziele@gmail.com',
-        phoneNumber: session.user.phone || '(11) 9141-8888',
-        district: 'Dhaka',
-        districtId: '47',
-        upazila: 'Dhaka Sadar',
-        upazilaId: '',
-        bloodGroup: 'O+',
-        role: 'Donor',
+        fullName: session.user.name || '',
+        email: session.user.email || '',
+        phoneNumber: session.user.phoneNumber || '', // Better Auth uses phoneNumber standard property
+        district: session.user.district || 'Dhaka',
+        districtId: session.user.districtId || '47',
+        upazila: session.user.upazila || '',
+        upazilaId: session.user.upazilaId || '',
+        bloodGroup: session.user.bloodGroup || 'O+',
+        role: session.user.role || 'Donor',
       });
     }
   }, [session, reset]);
@@ -138,15 +137,26 @@ const DonorProfile = () => {
     return UPAZILAS.filter((up) => up.districtId === watchDistrictId);
   }, [watchDistrictId]);
 
+  // FIXED: data contains the validated fields directly from React Hook Form
   const onSubmit = async (data) => {
-    console.log("Saving records to Database...", data);
-    // Add database request handler logic here 
-    setIsEditing(false);
+    try {
+      await authClient.updateUser({
+        name: data.fullName, // Note: Better Auth natively maps standard field to 'name'
+        phoneNumber: data.phoneNumber,
+        // If you extended your core user schema with custom parameters:
+        bloodGroup: data.bloodGroup,
+        district: data.district,
+        upazila: data.upazila,
+      });
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update profile via Better Auth:", error);
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-50/60 pb-12">
-      {/* Banner / Header Element Styling */}
       <div className="h-44 bg-gradient-to-r from-rose-100 via-green-50 to-rose-200 relative w-full mb-16">
         <div className="absolute -bottom-12 left-6 md:left-12 flex items-end gap-4">
           <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden bg-gray-200 shadow-sm relative">
@@ -161,21 +171,17 @@ const DonorProfile = () => {
           <div className="mb-2">
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold text-gray-800">{formValues.fullName || "User Profile"}</h1>
-              
             </div>
-            <p className="text-xs text-gray-500 mt-1">Start Date: 27 Jan 2025</p>
+            <p className="text-xs text-gray-500 mt-1">Account Established</p>
           </div>
         </div>
 
-        {/* Global Action View State Toggle Buttons */}
         <div className="absolute bottom-4 right-6 md:right-12">
           {!isEditing ? (
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-white cursor-pointer hover:bg-red-700 
-              hover:text-white
-              text-gray-700 text-sm font-medium rounded-lg border border-gray-200 shadow-sm transition-all flex items-center gap-2"
+              className="px-4 py-2 bg-white cursor-pointer hover:bg-red-700 hover:text-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 shadow-sm transition-all flex items-center gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
@@ -187,19 +193,14 @@ const DonorProfile = () => {
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-red-700
-                text-white
-                 cursor-pointer
-                text-sm font-medium rounded-lg border border-gray-200 transition-all"
+                className="px-4 py-2 bg-red-700 text-white cursor-pointer text-sm font-medium rounded-lg border border-gray-200 transition-all"
               >
                 Cancel
               </button>
               <button
-                type="button"
+                type="submit"
                 onClick={handleSubmit(onSubmit)}
-                className="px-4 py-2 bg-white cursor-pointer
-                hover:bg-rose-100
-                text-black text-sm font-medium rounded-lg shadow-sm transition-all"
+                className="px-4 py-2 bg-white cursor-pointer hover:bg-rose-100 text-black text-sm font-medium rounded-lg shadow-sm transition-all"
               >
                 Save Changes
               </button>
@@ -216,9 +217,7 @@ const DonorProfile = () => {
               <p className="text-xs text-gray-400 mt-0.5">Manage your structural information and local records parameters.</p>
             </div>
 
-            {/* Profile Fields Organized in Grid Infrastructure */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-8">
-              
               {/* Full Name field */}
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">Full Name</label>
@@ -234,12 +233,11 @@ const DonorProfile = () => {
                 {errors.fullName && <p className="text-xs text-red-500 mt-0.5">{errors.fullName.message}</p>}
               </div>
 
-              {/* Email Address Field (Always Read Only) */}
+              {/* Email Address Field */}
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">Email</label>
                 <div className="h-11 flex items-center gap-2">
                   <span className="text-sm font-semibold text-gray-700">{formValues.email || "—"}</span>
-                  
                 </div>
               </div>
 
@@ -255,7 +253,6 @@ const DonorProfile = () => {
                 ) : (
                   <div className="h-11 flex items-center gap-2">
                     <span className="text-sm font-semibold text-gray-700">{formValues.phoneNumber || "—"}</span>
-                    
                   </div>
                 )}
                 {errors.phoneNumber && <p className="text-xs text-red-500 mt-0.5">{errors.phoneNumber.message}</p>}
@@ -274,9 +271,9 @@ const DonorProfile = () => {
                       const val = Array.from(keys)[0]?.toString() || '';
                       const selectedDistrict = DISTRICTS.find((dist) => dist.id === val);
                       setValue('districtId', val, { shouldValidate: true });
-                      setValue('district', selectedDistrict?.name || '');
-                      setValue('upazilaId', '');
-                      setValue('upazila', '');
+                      setValue('district', selectedDistrict?.name || '', { shouldValidate: true });
+                      setValue('upazilaId', '', { shouldValidate: true });
+                      setValue('upazila', '', { shouldValidate: true });
                     }}
                   >
                     <Select.Trigger className="h-11 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left text-sm">
@@ -314,7 +311,7 @@ const DonorProfile = () => {
                       const val = Array.from(keys)[0]?.toString() || '';
                       const upazila = UPAZILAS.find((u) => u.id === val);
                       setValue('upazilaId', val, { shouldValidate: true });
-                      setValue('upazila', upazila?.name || '');
+                      setValue('upazila', upazila?.name || '', { shouldValidate: true });
                     }}
                   >
                     <Select.Trigger
@@ -355,7 +352,6 @@ const DonorProfile = () => {
                   </span>
                 </div>
               </div>
-
             </div>
 
             <hr className="border-gray-100" />
