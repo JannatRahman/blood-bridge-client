@@ -17,7 +17,7 @@ const CardDetailsPage = ({ donation }) => {
       <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-red-600 via-rose-500 to-red-800 p-8 text-white">
+        <div className="bg-gradient-to-r from-red-800 via-red-500 to-red-900 p-8 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div>
               <h1 className="text-3xl font-bold">
@@ -29,7 +29,7 @@ const CardDetailsPage = ({ donation }) => {
               </p>
             </div>
 
-            <div className="bg-white text-red-600 px-6 py-4 rounded-2xl">
+            <div className="bg-white text-red-800 px-6 py-4 rounded-2xl">
               <p className="text-sm font-medium">Blood Group</p>
               <h2 className="text-4xl font-bold">
                 {donation?.bloodGroup}
@@ -47,12 +47,12 @@ const CardDetailsPage = ({ donation }) => {
             </h2>
 
             <div className="flex items-center gap-3">
-              <Person className="text-red-500" size={20} />
+              <Person className="text-red-800" size={20} />
               <span>{donation?.recipientName}</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <MapPin className="text-red-500" size={20} />
+              <MapPin className="text-red-800" size={20} />
               <span>
                 {donation?.recipientUpazila},{" "}
                 {donation?.hospitalName}</span>
@@ -73,17 +73,17 @@ const CardDetailsPage = ({ donation }) => {
             </h2>
 
             <div className="flex items-center gap-3">
-              <Calendar className="text-red-500" size={20} />
+              <Calendar className="text-red-800" size={20} />
               <span>{donation?.donationDate}</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <Clock className="text-red-500" size={20} />
+              <Clock className="text-red-800" size={20} />
               <span>{donation?.donationTime}</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <Heart className="text-red-500" size={20} />
+              <Heart className="text-red-800" size={20} />
               <span>{donation?.bloodGroup} Blood Needed</span>
             </div>
 
@@ -103,7 +103,7 @@ const CardDetailsPage = ({ donation }) => {
         {/* Message */}
         <div className="px-8 pb-8">
           <div className="bg-red-50 border border-red-100 rounded-2xl p-5">
-            <h3 className="font-bold text-red-600 mb-2">
+            <h3 className="font-bold text-red-800 mb-2">
               Request Message
             </h3>
 

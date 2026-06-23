@@ -1,5 +1,8 @@
 "use client";
 
+import { baseUrl } from "@/lib/api/baseUrl";
+// 1. FIX: Import authClient directly so authClient.useSession() is valid
+import { authClient } from "@/lib/auth-client";
 import {
   Modal,
   Button,
@@ -8,80 +11,95 @@ import {
 } from "@heroui/react";
 
 const DonateModal = ({ donation }) => {
-  // HeroUI v3 replaces useDisclosure with useOverlayState
   const state = useOverlayState();
 
-  // Get these from your auth context
-  const user = {
-    name: "John Doe",
-    email: "john@gmail.com",
-  };
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
 
+  // 2. FIX: Removed the duplicate/broken declaration block here
   const handleConfirmDonation = async () => {
+    if (!user) {
+      alert("You must be logged in to confirm a donation request.");
+      return;
+    }
+
     const donationInfo = {
       donorName: user.name,
       donorEmail: user.email,
       status: "Inprogress",
     };
 
-    console.log(donationInfo);
+    try {
 
-    // PATCH API HERE
-    // await axios.patch(`/donation/${donation._id}`, donationInfo)
+      const response = await fetch(`${baseUrl}/api/single-request/${donation._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(donationInfo),
+      });
+
+      if (response.ok) {
+        alert("Thank you! You have successfully stepped up to donate.");
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Failed to register donation.");
+      }
+    } catch (error) {
+      console.error("Error updating donation request:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (
     <>
       <Button
-        size="lg"
-        color="danger"
-        className="w-full md:w-auto"
+        className="w-full bg-[#7D0A0A] text-white p-2 font-semibold rounded-xl"
         onPress={state.open}
       >
         Donate Now ❤️
       </Button>
 
-      {/* Main Modal container */}
-      <Modal>
-        {/* Backdrop overlay configuration */}
+      <Modal
+      className=' '
+        isOpen={state.isOpen}
+        onOpenChange={state.setOpen}
+        placement="center"
+      >
         <Modal.Backdrop variant="opaque">
-          {/* Container coordinates open/close state */}
-          <Modal.Container
-            isOpen={state.isOpen}
-            onOpenChange={state.setOpen}
-            placement="center"
-          >
-            {/* Dialog contains the render logic and provides the 'close' method */}
+          <Modal.Container>
             <Modal.Dialog>
               {({ close }) => (
                 <>
-                  <Modal.Header>
+                  <Modal.Header className="text-xl font-bold">
                     Confirm Blood Donation
                   </Modal.Header>
 
-                  <Modal.Body>
+                  <Modal.Body className="space-y-4">
+                    {/* 3. FIX: Added ?. so it safely falls back to "" if loading */}
                     <Input
                       label="Donor Name"
-                      value={user.name}
-                      isReadOnly
+                      value={user?.name || ""}
+                      readOnly
                     />
 
                     <Input
                       label="Donor Email"
-                      value={user.email}
-                      isReadOnly
+                      value={user?.email || ""}
+                      readOnly
                     />
 
                     <Input
                       label="Recipient"
                       value={donation?.recipientName || ""}
-                      isReadOnly
+                      readOnly
                     />
 
                     <Input
                       label="Blood Group"
                       value={donation?.bloodGroup || ""}
-                      isReadOnly
+                      readOnly
                     />
                   </Modal.Body>
 
@@ -94,6 +112,7 @@ const DonateModal = ({ donation }) => {
                     </Button>
 
                     <Button
+                    className='bg-[#7D0A0A]'
                       color="danger"
                       onPress={() => {
                         handleConfirmDonation();

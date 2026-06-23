@@ -187,7 +187,7 @@ export default function FilterComponent() {
           <div className="flex items-center gap-2.5 w-full mt-2 md:mt-0">
             <Button
               onClick={handleApplyFilters}
-              className="flex-grow bg-rose-600 hover:bg-rose-700 text-white font-semibold h-10 text-sm shadow-md rounded-xl"
+              className="flex-grow bg-[#7D0A0A] hover:bg-red-800 text-white font-semibold h-10 text-sm shadow-md rounded-xl"
               startContent={<FaSlidersH size={13} />}
             >
               Apply Filters

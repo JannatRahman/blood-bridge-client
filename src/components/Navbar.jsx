@@ -65,9 +65,7 @@ export default function Navbar() {
           <Link href="/requests" className={getLinkClass("/requests")}>
             Donation Requests
           </Link>
-          <Link href="/search-donor" className={getLinkClass("/search-donor")}>
-            Search Donors
-          </Link>
+          
           {session && session?.user && (
             <Link
               href={`/funding`}
@@ -175,13 +173,7 @@ export default function Navbar() {
           >
             Donation Requests
           </Link>
-          <Link
-            href="/search-donor"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`px-4 py-2 rounded-xl text-sm ${pathname === "/search-donor" ? "bg-white/15 text-white" : "text-rose-200/80"}`}
-          >
-            Search Donors
-          </Link>
+          
 
           {session && session?.user && (
             <Link
