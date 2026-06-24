@@ -1,12 +1,14 @@
 import Banner from "@/components/Banner";
 import BloodDonationBenefits from "@/components/BloodDonationBenefits";
 import ContactUs from "@/components/ContactUs";
+import LimitedDonationCards from "@/components/LimitedDonationCards";
 
 
 export default function Home() {
   return (
-    <div>
+    <div className="bg-bg-[#F3EDC8">
      <Banner/>
+     <LimitedDonationCards/>
      <ContactUs/>
      <BloodDonationBenefits/>
      

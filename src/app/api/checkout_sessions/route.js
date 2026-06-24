@@ -9,6 +9,7 @@ export async function POST(req) {
     headers: await headers()
   });
   const data = await req.json();
+ 
   
   // console.log(user, 'user');
   try {
@@ -24,7 +25,8 @@ export async function POST(req) {
           currency: 'usd',
           unit_amount: Number(data?.price) * 100,
           product_data: {
-            name: user?.name
+            name: user?.name,
+            description: `Donation by ${user?.name}`
           } ,
         
          },

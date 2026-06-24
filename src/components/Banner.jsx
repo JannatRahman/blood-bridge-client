@@ -1,93 +1,162 @@
-import React from 'react';
-import { Button } from '@heroui/react'; // Adjust import path based on your HeroUI setup (e.g., '@nextui-org/react' if using the older package name)
-import { FiUsers, FiHeart, FiArrowRight, FiEye } from 'react-icons/fi';
+'use client'
+import React, { useEffect, useState } from 'react';
+import { Button } from '@heroui/react';
+import { FiUsers, FiHeart, FiArrowRight } from 'react-icons/fi';
 import { BiDollar } from 'react-icons/bi';
 import Link from 'next/link';
 import { Magnifier } from '@gravity-ui/icons';
 
+// 1. CRITICAL FIX: Define baseUrl so the fetch hook knows where to go
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000';
+
 export default function Banner() {
+  const [fundingData, setFundingData] = useState([]);
+
+  useEffect(() => {
+    const fetchFunds = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/api/get-funds`);
+        if (res.ok) {
+          const data = await res.json();
+          setFundingData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching funds for banner stats:", error);
+      }
+    };
+    fetchFunds();
+  }, []);
+
+  // 2. Compute the real-time dynamic total sum safely
+  const totalFunding = fundingData.reduce(
+    (total, fund) => total + Number(fund.amount || 0),
+    0
+  );
+
   return (
-    <section className=" mb-5 relative min-h-[600px] w-full overflow-hidden rounded-b-[40px] bg-black text-white">
-      {/* Background Image with Dark Overlay */}
+    <section className="relative w-full overflow-hidden bg-black text-white">
+      {/* Background */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 mix-blend-lighten"
-        style={{ backgroundImage: "url('/images/banner.png')" }} // Ensure your image is in the public folder as banner.jpg
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/images/banner.png')",
+        }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80" />
 
-      {/* Main Content Container */}
-      <div className="relative z-10 flex flex-col items-center justify-between min-h-[600px] pt-16 px-4 max-w-6xl mx-auto text-center">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black/90" />
 
-        {/* Top Badge */}
-        <div className="inline-flex items-center gap-2 bg-neutral-900/80 border border-neutral-700/50 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-medium tracking-wide">
-          <FiHeart className="text-red-500 fill-red-500 animate-pulse" size={12} />
-          <span>Trusted by 15+ Local Heroes</span>
-        </div>
+      {/* Hero Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Hero Typography & CTA */}
-        <div className="max-w-3xl my-auto py-12">
-          <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
-            Saving Lives, <br />
-            <span className="text-red-500">One Drop</span> at a Time
+        <div className="flex flex-col items-center justify-center text-center min-h-[80vh] md:min-h-[85vh] py-16">
+
+          {/* Badge */}
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl px-4 py-2">
+            <FiHeart
+              className="text-red-500 fill-red-500 animate-pulse"
+              size={14}
+            />
+            <span className="text-xs sm:text-sm font-medium text-gray-200">
+              Trusted by thousands of donors
+            </span>
+          </div>
+
+          {/* Heading */}
+          <h1 className="max-w-4xl text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1]">
+            Saving Lives,
+            <br />
+            <span className="text-red-500">
+              One Drop at a Time
+            </span>
           </h1>
 
-          <p className="text-neutral-300 text-sm md:text-base max-w-xl mx-auto mb-8 leading-relaxed">
-            Connect directly with 19 pending requests or join our community of
-            donors to help save more lives.
+          {/* Description */}
+          <p className="mt-6 max-w-2xl text-sm sm:text-base md:text-lg text-neutral-300 leading-relaxed">
+            Connect with blood donors instantly, support emergency
+            requests, and become part of a life-saving community
+            making a real difference every day.
           </p>
 
-          {/* Call to Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          {/* CTA Buttons */}
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+
             <Button
-              className="bg-red-500 hover:bg-red-600 text-white font-semibold px-8 h-12 rounded-xl shadow-lg shadow-red-500/20"
+              className="h-12 sm:h-14 px-8 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-2xl shadow-lg shadow-red-500/30 transition-all duration-300"
               endContent={<FiArrowRight />}
             >
               Become a Donor
             </Button>
-            <Link href={'/search-donor'}>
+
+            <Link href="/search-donor">
               <Button
                 variant="bordered"
-                className="border-neutral-500/50 hover:border-white text-white font-medium px-8 h-12 rounded-xl backdrop-blur-sm bg-white/5"
-                endContent={<Magnifier
-
-                  className="text-2xl" />}
+                className="h-12 sm:h-14 px-8 border-white/20 bg-white/5 backdrop-blur-md text-white rounded-2xl hover:bg-white/10"
+                endContent={<Magnifier />}
               >
                 Search Donors
               </Button>
             </Link>
+
           </div>
+
         </div>
 
-        {/* Bottom Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl translate-y-6 md:translate-y-8 mt-auto">
+        {/* Stats Section */}
+        <div className="relative -mt-10 md:-mt-16 pb-10 pt-7">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-          {/* Card 1: Active Donors */}
-          <div className="bg-white text-neutral-900 rounded-2xl p-6 flex flex-col items-center justify-center shadow-xl border border-neutral-100">
-            <div className="p-2.5 bg-red-50 rounded-xl text-red-500 mb-2">
-              <FiUsers size={20} />
+            {/* Donors */}
+            <div className="group rounded-3xl bg-white p-6 text-center shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+                <FiUsers size={24} />
+              </div>
+
+              <h3 className="text-3xl font-black text-gray-900">
+                {fundingData.length > 0
+                  ? `${fundingData.length}+`
+                  : "0"}
+              </h3>
+
+              <p className="mt-2 text-xs uppercase tracking-[3px] text-gray-500 font-bold">
+                Active Donors
+              </p>
             </div>
-            <span className="text-3xl font-black tracking-tight">15+</span>
-            <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 mt-1">Active Donors</span>
-          </div>
 
-          {/* Card 2: Total Funding */}
-          <div className="bg-white text-neutral-900 rounded-2xl p-6 flex flex-col items-center justify-center shadow-xl border border-neutral-100">
-            <div className="p-2.5 bg-red-50 rounded-xl text-red-500 mb-2">
-              <BiDollar size={20} />
+            {/* Funding */}
+            <div className="group rounded-3xl bg-white p-6 text-center shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+                <BiDollar size={24} />
+              </div>
+
+              <h3 className="text-3xl font-black text-gray-900 break-words">
+                $
+                {totalFunding.toLocaleString(undefined, {
+                  maximumFractionDigits: 0,
+                })}
+              </h3>
+
+              <p className="mt-2 text-xs uppercase tracking-[3px] text-gray-500 font-bold">
+                Total Funding
+              </p>
             </div>
-            <span className="text-3xl font-black tracking-tight">$12,886</span>
-            <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 mt-1">Total Funding</span>
-          </div>
 
-          {/* Card 3: Total Requests */}
-          <div className="bg-white text-neutral-900 rounded-2xl p-6 flex flex-col items-center justify-center shadow-xl border border-neutral-100">
-            <div className="p-2.5 bg-red-50 rounded-xl text-red-500 mb-2">
-              <FiHeart size={20} />
+            {/* Requests */}
+            <div className="group rounded-3xl bg-white p-6 text-center shadow-2xl transition-all duration-300 hover:-translate-y-2 sm:col-span-2 lg:col-span-1">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+                <FiHeart size={24} />
+              </div>
+
+              <h3 className="text-3xl font-black text-gray-900">
+                19
+              </h3>
+
+              <p className="mt-2 text-xs uppercase tracking-[3px] text-gray-500 font-bold">
+                Total Requests
+              </p>
             </div>
-            <span className="text-3xl font-black tracking-tight">19</span>
-            <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 mt-1">Total Requests</span>
-          </div>
 
+          </div>
         </div>
 
       </div>

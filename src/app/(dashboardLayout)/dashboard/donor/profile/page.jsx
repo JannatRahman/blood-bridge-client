@@ -137,13 +137,12 @@ const DonorProfile = () => {
     return UPAZILAS.filter((up) => up.districtId === watchDistrictId);
   }, [watchDistrictId]);
 
-  // FIXED: data contains the validated fields directly from React Hook Form
+  
   const onSubmit = async (data) => {
     try {
       await authClient.updateUser({
-        name: data.fullName, // Note: Better Auth natively maps standard field to 'name'
+        name: data.fullName, 
         phoneNumber: data.phoneNumber,
-        // If you extended your core user schema with custom parameters:
         bloodGroup: data.bloodGroup,
         district: data.district,
         upazila: data.upazila,

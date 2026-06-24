@@ -12,6 +12,7 @@ import {
 import DonateModal from "./DonateModal";
 
 const CardDetailsPage = ({ donation }) => {
+  
   return (
     <div className="max-w-5xl mx-auto">
       <div className="bg-white rounded-3xl shadow-lg overflow-hidden">

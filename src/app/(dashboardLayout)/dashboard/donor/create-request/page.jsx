@@ -7,7 +7,7 @@ import { Envelope, Heart, MapPin, Person, Shield, Smartphone } from '@gravity-ui
 import { Button, Input, ListBox, Select, TextArea, Card } from '@heroui/react';
 import { redirect } from 'next/navigation';
 import React, { useMemo, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 const DISTRICTS = [
@@ -100,7 +100,7 @@ const DonorCreateRequestPage = () => {
 
   const { data: session } = useSession();
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, watch, control, setValue, formState: { errors } } = useForm({
     defaultValues: {
       requesterName: '',
       requesterEmail: '',
@@ -135,21 +135,21 @@ const DonorCreateRequestPage = () => {
     return UPAZILAS.filter((up) => up.districtId === watchDistrictId);
   }, [watchDistrictId]);
 
-  const onSubmit =async (data) => {
-console.log(data);
-  const updateData = {
-    ...data
-  }
+  const onSubmit = async (data) => {
+    console.log(data);
+    const updateData = {
+      ...data
+    }
 
 
-  const result = await createRequest(updateData)
-  console.log(result);
-  if(result.insertedId){
-    toast.success('Donor Request Created Successfully...')
-    redirect('/requests')
-  }
+    const result = await createRequest(updateData)
+    console.log(result);
+    if (result.insertedId) {
+      toast.success('Donor Request Created Successfully...')
+      redirect('/requests')
+    }
 
-   
+
   };
 
   return (
@@ -211,20 +211,26 @@ console.log(data);
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
 
                 {/* Recipient Name Input Field */}
+                {/* Recipient Name Input Field */}
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-sm 
-                  text-gray-800
-                  font-semibold ">Recipient Name</span>
-                  <Input
-                    {...register("recipientName", { required: 'Recipient Name is required' })}
-                    placeholder="Enter Recipient Patient's Name"
-                    startContent={<Person className="text-gray-400 w-4 h-4" />}
-                    className="w-full"
-                    isInvalid={!!errors.recipientName}
-                    errorMessage={errors.recipientName?.message}
-                    classNames={{
-                      inputWrapper: "h-11 border border-gray-200 focus-within:border-gray-400 text-sm"
-                    }}
+                  <span className="text-sm text-gray-800 font-semibold">Recipient Name</span>
+                  <Controller
+                    name="recipientName"
+                    control={control} // Make sure to destructure 'control' from useForm()
+                    rules={{ required: 'Recipient Name is required' }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter Recipient Patient's Name"
+                        startContent={<Person className="text-gray-400 w-4 h-4" />}
+                        className="w-full"
+                        isInvalid={!!errors.recipientName}
+                        errorMessage={errors.recipientName?.message}
+                        classNames={{
+                          inputWrapper: "h-11 border border-gray-200 focus-within:border-gray-400 text-sm"
+                        }}
+                      />
+                    )}
                   />
                 </div>
 
@@ -406,23 +412,31 @@ console.log(data);
             </div>
 
             {/* Request Message Detailed Text Block Area Field */}
+            {/* Request Message Detailed Text Block Area Field */}
             <div className="w-full flex flex-col gap-1.5">
               <span className="text-xs font-semibold text-gray-700">Request Message (Detailed Reason)</span>
-              <TextArea
-                placeholder="Explain the patient condition and why they require blood at this moment..."
-                minRows={4}
-                isInvalid={!!errors.requestMessage}
-                errorMessage={errors.requestMessage?.message}
-                {...register("requestMessage", {
+              <Controller
+                name="requestMessage"
+                control={control}
+                rules={{
                   required: "Detailed reason is required",
                   minLength: {
                     value: 5,
                     message: "Please write at least 5 characters detailing the medical reason.",
                   },
-                })}
-                classNames={{
-                  inputWrapper: "border border-gray-200 focus-within:border-gray-400 text-sm p-3"
                 }}
+                render={({ field }) => (
+                  <TextArea
+                    {...field}
+                    placeholder="Explain the patient condition and why they require blood at this moment..."
+                    minRows={4}
+                    isInvalid={!!errors.requestMessage}
+                    errorMessage={errors.requestMessage?.message}
+                    classNames={{
+                      inputWrapper: "border border-gray-200 focus-within:border-gray-400 text-sm p-3"
+                    }}
+                  />
+                )}
               />
             </div>
 
