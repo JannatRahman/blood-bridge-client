@@ -52,9 +52,16 @@ export default function Navbar() {
           <div className="h-8 flex items-center justify-center transform rotate-12">
             <Logo />
           </div>
-          <span className="text-lg font-semibold tracking-tight text-white font-sans">
-            Blood Bridge
-          </span>
+          <Link href={'/'} className="flex items-center gap-2 group">
+            {/* Modern Drop/Bridge Icon */}
+           
+
+            {/* Typographic Logo */}
+            <div className="font-sans tracking-tight text-white">
+              <span className="text-xl font-extrabold tracking-wide">BLOOD</span>
+              <span className="text-xl font-light text-white/90">BRIDGE</span>
+            </div>
+          </Link>
         </div>
 
         {/* CENTER NAVIGATION LINKS (DESKTOP) */}
@@ -65,7 +72,7 @@ export default function Navbar() {
           <Link href="/requests" className={getLinkClass("/requests")}>
             Donation Requests
           </Link>
-          
+
           {session && session?.user && (
             <Link
               href={`/funding`}
@@ -173,7 +180,7 @@ export default function Navbar() {
           >
             Donation Requests
           </Link>
-          
+
 
           {session && session?.user && (
             <Link

@@ -37,7 +37,7 @@ export default function FundingPage() {
           setFundingData(data);
         }
       } catch (error) {
-        console.error("Error fetching funds:", error);
+        // console.error("Error fetching funds:", error);
       } finally {
         setIsLoading(false);
       }
@@ -74,7 +74,7 @@ export default function FundingPage() {
         console.error("Failed to save donation.");
       }
     } catch (error) {
-      console.error("Error submitting donation:", error);
+      // console.error("Error submitting donation:", error);
     }
   };
 

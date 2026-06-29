@@ -41,10 +41,10 @@ const EditRequestModal = ({ isModalOpen, setIsModalOpen, editingRequest }) => {
     const updateData = {
       ...data
     }
-    console.log(data);
+    // console.log(data);
     const result = await updateRequest(updateData, editingRequest?._id)
 
-    console.log(result);
+    // console.log(result);
 
     if (result.modifiedCount) {
 

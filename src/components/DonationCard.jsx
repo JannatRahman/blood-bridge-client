@@ -1,4 +1,5 @@
-import React from "react";
+'use client'
+
 import {
   ArrowRight,
   Person,
@@ -9,7 +10,10 @@ import {
 } from "@gravity-ui/icons";
 import Link from "next/link";
 
+
 export default function DonationCard({ donation }) {
+
+ 
 
   const currentDonation = donation;
 
@@ -28,8 +32,8 @@ export default function DonationCard({ donation }) {
 
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold ${currentDonation?.status === "Pending"
-                ? "bg-amber-100 text-amber-700"
-                : "bg-green-100 text-green-700"
+              ? "bg-amber-100 text-amber-700"
+              : "bg-green-100 text-green-700"
               }`}
           >
             {currentDonation?.status}
@@ -89,6 +93,8 @@ export default function DonationCard({ donation }) {
           </button>
         </Link>
       </div>
+
+      
     </div>
   );
 }

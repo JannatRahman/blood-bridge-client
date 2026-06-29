@@ -4,7 +4,7 @@ import React from 'react';
 
 const PaymentButton = ({price}) => {
   const giveFunding = async () => {
-    console.log(price);
+    // console.log(price);
    
       const res = await fetch('/api/checkout_sessions', {
         method: 'POST',
@@ -15,7 +15,7 @@ const PaymentButton = ({price}) => {
       });
       
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
 
       if(data?.url){
         window.location.href = data.url;

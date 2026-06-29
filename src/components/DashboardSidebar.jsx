@@ -1,22 +1,29 @@
+'use client'
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation'; // Added to track active link
 import { FaCalendarAlt, FaHome, FaPlus, FaSignOutAlt, FaUsers, FaUserSecret, FaBars, FaTimes } from 'react-icons/fa';
 import Logo from './Logo';
-import { useSession } from '@/lib/auth-client';
+import { authClient, useSession } from '@/lib/auth-client';
 import { MdDashboard, MdOutlinePublic, MdPublic } from 'react-icons/md';
+
+import toast from 'react-hot-toast';
 
 const DashboardSidebar = () => {
   const { data: session } = useSession();
-  const [isOpen, setIsOpen] = useState(false); // Controls mobile drawer visibility
-  
-  const handleLogout = () => {
-    // Your logout logic here
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname(); // Get the active route path
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    router.push("/");
+    toast('Logged Out');
   };
 
   const volunteerMenu = [
     { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/volunteer' },
-    { key: "profile", label: "Profile", icon: FaUsers, href: '/dashboard/volunteer/profile' },
     { key: "public-request", label: "Public Request", icon: MdPublic, href: '/dashboard/volunteer/public-request' },
   ];
 
@@ -30,34 +37,40 @@ const DashboardSidebar = () => {
   const adminMenu = [
     { key: "dashboard", label: "Dashboard", icon: MdDashboard, href: '/dashboard/admin' },
     { key: "profile", label: "Profile", icon: FaUsers, href: '/dashboard/admin/profile' },
-    { key: "my-request", label: "My Requests", icon: FaPlus, href: '/dashboard/admin/my-request' },
-    { key: "create-request", label: "Create Request", icon: FaCalendarAlt, href: '/dashboard/donor/create-request' },
+
+
     { key: "all-users", label: "All Users", icon: FaUserSecret, href: '/dashboard/admin/all-users' },
     { key: "public-request", label: "Public Request", icon: MdOutlinePublic, href: '/dashboard/admin/public-request' },
   ];
 
-  // Safeguard role selection with case-insensitivity
   const role = session?.user?.role;
   const normalizedRole = role ? role.toLowerCase() : '';
 
-  const menuItems = normalizedRole === 'volunteer' 
-    ? volunteerMenu 
-    : normalizedRole === 'donor' 
-    ? donorMenu 
-    : normalizedRole === 'admin' 
-    ? adminMenu 
-    : [];
+  const menuItems = normalizedRole === 'volunteer'
+    ? volunteerMenu
+    : normalizedRole === 'donor'
+      ? donorMenu
+      : normalizedRole === 'admin'
+        ? adminMenu
+        : [];
 
-  // Core sidebar layout markup function
   const renderSidebarContent = () => (
     <div className="h-full flex flex-col bg-[#7D0A0A] backdrop-blur-xl">
       {/* Brand / Logo */}
       <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Logo />
-          <h2 className="text-white text-2xl font-bold">BloodBridge</h2>
+          <Link href={'/'} className="flex items-center gap-2 group">
+            {/* Modern Drop/Bridge Icon */}
+
+
+            {/* Typographic Logo */}
+            <div className="font-sans tracking-tight text-white">
+              <span className="text-xl font-extrabold tracking-wide">BLOOD</span>
+              <span className="text-xl font-light text-white/90">BRIDGE</span>
+            </div>
+          </Link>
         </div>
-        {/* Mobile close button inside drawer */}
         <button className="md:hidden text-white cursor-pointer" onClick={() => setIsOpen(false)}>
           <FaTimes size={20} />
         </button>
@@ -89,19 +102,28 @@ const DashboardSidebar = () => {
       {/* Navigation Menu */}
       <nav className="flex-grow overflow-y-auto px-3 py-4 space-y-1">
         <p className="text-sm text-slate-300 font-bold uppercase tracking-widest px-3 pb-2">Menu</p>
-        {menuItems.map(({ key, label, icon: Icon, href }) => (
-          <Link
-            key={key}
-            href={href}
-            onClick={() => setIsOpen(false)} // Close mobile panel upon link selection
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 text-left text-white hover:text-slate-200 hover:bg-white/5"
-          >
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors bg-white/5">
-              <Icon size={20} />
-            </span>
-            <span>{label}</span>
-          </Link>
-        ))}
+        {menuItems.map(({ key, label, icon: Icon, href }) => {
+          // Check if the link route strictly matches or starts with the item's href path
+          const isActive = pathname === href;
+
+          return (
+            <Link
+              key={key}
+              href={href}
+              onClick={() => setIsOpen(false)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 text-left ${isActive
+                ? "bg-white text-[#7D0A0A] shadow-md"
+                : "text-white hover:text-slate-200 hover:bg-white/5"
+                }`}
+            >
+              <span className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${isActive ? "bg-[#7D0A0A]/10 text-[#7D0A0A]" : "bg-white/5"
+                }`}>
+                <Icon size={20} />
+              </span>
+              <span>{label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Bottom Links */}
@@ -112,22 +134,23 @@ const DashboardSidebar = () => {
           </span>
           <h2 className="text-white">Back To Site</h2>
         </Link>
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/5 transition-all duration-150 cursor-pointer"
-        >
-          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
-            <FaSignOutAlt size={13} />
-          </span>
-          <h2 className="text-white">Sign Out</h2>
-        </button>
+        <Link href={'/login'}>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/5 transition-all duration-150 cursor-pointer"
+          >
+            <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+              <FaSignOutAlt size={13} />
+            </span>
+            <h2 className="text-white">Sign Out</h2>
+          </button></Link>
       </div>
     </div>
   );
 
   return (
     <>
-      {/* 1. MOBILE HEADER BAR (Hidden on md screens and up) */}
+      {/* 1. MOBILE HEADER BAR */}
       <div className="md:hidden flex items-center justify-between bg-[#7D0A0A] text-white px-4 py-3 sticky top-0 z-40 shadow-md w-full">
         <div className="flex items-center gap-2">
           <Logo />
@@ -140,16 +163,13 @@ const DashboardSidebar = () => {
 
       {/* 2. MOBILE OVERLAY + DRAWER PANEL */}
       <div className={`fixed inset-0 z-50 transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-        {/* Dark Backdrop mask */}
         <div className="absolute inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
-        
-        {/* Sliding Sidebar Panel */}
         <aside className={`absolute top-0 left-0 w-64 h-full transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
           {renderSidebarContent()}
         </aside>
       </div>
 
-      {/* 3. DESKTOP PERMANENT SIDEBAR (Hidden on mobile via hidden md:block) */}
+      {/* 3. DESKTOP PERMANENT SIDEBAR */}
       <aside className="hidden md:block w-64 h-screen border-r border-white/5 sticky top-0 shrink-0">
         {renderSidebarContent()}
       </aside>

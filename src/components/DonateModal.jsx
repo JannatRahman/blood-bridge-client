@@ -9,6 +9,7 @@ import {
   Input,
   useOverlayState,
 } from "@heroui/react";
+import toast from "react-hot-toast";
 
 const DonateModal = ({ donation }) => {
   const state = useOverlayState();
@@ -19,7 +20,7 @@ const DonateModal = ({ donation }) => {
   // 2. FIX: Removed the duplicate/broken declaration block here
   const handleConfirmDonation = async () => {
     if (!user) {
-      alert("You must be logged in to confirm a donation request.");
+      toast.error("You must be logged in to confirm a donation request.");
       return;
     }
 
@@ -40,15 +41,15 @@ const DonateModal = ({ donation }) => {
       });
 
       if (response.ok) {
-        alert("Thank you! You have successfully stepped up to donate.");
+        toast.success("Thank you! You have successfully stepped up to donate.");
         window.location.reload();
       } else {
         const errorData = await response.json();
-        alert(errorData.message || "Failed to register donation.");
+        toast.error(errorData.message || "Failed to register donation.");
       }
     } catch (error) {
-      console.error("Error updating donation request:", error);
-      alert("Something went wrong. Please try again.");
+      // console.error("Error updating donation request:", error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
 

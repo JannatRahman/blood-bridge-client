@@ -6,7 +6,7 @@ import LimitedDonationCards from "@/components/LimitedDonationCards";
 
 export default function Home() {
   return (
-    <div className="bg-bg-[#F3EDC8">
+    <div className="bg-[#F3EDC8">
      <Banner/>
      <LimitedDonationCards/>
      <ContactUs/>

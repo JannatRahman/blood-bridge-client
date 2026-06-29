@@ -6,6 +6,7 @@ import { Card, ListBox, Select } from "@heroui/react";
 import Image from "next/image";
 import { useMemo, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { motion, AnimatePresence } from "framer-motion";
 
 const DISTRICTS = [
   { id: "1", name: "Cumilla" }, { id: "2", name: "Feni" }, { id: "3", name: "Brahmanbaria" },
@@ -14,7 +15,7 @@ const DISTRICTS = [
   { id: "10", name: "Khagrachhari" }, { id: "11", name: "Bandarban" }, { id: "12", name: "Sirajganj" },
   { id: "13", name: "Pabna" }, { id: "14", name: "Bogura" }, { id: "15", name: "Rajshahi" },
   { id: "16", name: "Natore" }, { id: "17", name: "Joypurhat" }, { id: "18", name: "Chapainawabganj" },
-  { id: "19", name: "Naogaon" }, { id: "20", name: "Jashore" }, { id: "21", name: "Satkhira" },
+  { id: "19", name: "Naogaon" }, { id: "20", name: "Jashore" }, { id: "21", textValue: "Satkhira", name: "Satkhira" },
   { id: "22", name: "Meherpur" }, { id: "23", name: "Narail" }, { id: "24", name: "Chuadanga" },
   { id: "25", name: "Kushtia" }, { id: "26", name: "Magura" }, { id: "27", name: "Khulna" },
   { id: "28", name: "Bagerhat" }, { id: "29", name: "Jhenaidah" }, { id: "30", name: "Jhalakathi" },
@@ -92,7 +93,22 @@ const UPAZILAS = [
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-const DonorProfile = () => {
+// Variants for staggered component animations
+const containerVariants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut", staggerChildren: 0.05 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+};
+
+const AdminProfile = () => {
   const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -110,13 +126,12 @@ const DonorProfile = () => {
     }
   });
 
-  // Hydrate data when session loads
   useEffect(() => {
     if (session?.user) {
       reset({
         fullName: session.user.name || '',
         email: session.user.email || '',
-        phoneNumber: session.user.phoneNumber || '', // Better Auth uses phoneNumber standard property
+        phoneNumber: session.user.phoneNumber || '', 
         district: session.user.district || 'Dhaka',
         districtId: session.user.districtId || '47',
         upazila: session.user.upazila || '',
@@ -137,7 +152,6 @@ const DonorProfile = () => {
     return UPAZILAS.filter((up) => up.districtId === watchDistrictId);
   }, [watchDistrictId]);
 
-  
   const onSubmit = async (data) => {
     try {
       await authClient.updateUser({
@@ -147,10 +161,9 @@ const DonorProfile = () => {
         district: data.district,
         upazila: data.upazila,
       });
-
       setIsEditing(false);
     } catch (error) {
-      // console.error("Failed to update profile via Better Auth:", error);
+      // Handle error cleanly
     }
   };
 
@@ -175,219 +188,280 @@ const DonorProfile = () => {
           </div>
         </div>
 
+        {/* Dynamic Edit/Save Toolbar */}
         <div className="absolute bottom-4 right-6 md:right-12">
-          {!isEditing ? (
-            <button
-              type="button"
-              onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-white cursor-pointer hover:bg-red-700 hover:text-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 shadow-sm transition-all flex items-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-              </svg>
-              Edit Profile
-            </button>
-          ) : (
-            <div className="flex gap-2">
-              <button
+          <AnimatePresence mode="wait">
+            {!isEditing ? (
+              <motion.button
+                key="edit-btn"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-red-700 text-white cursor-pointer text-sm font-medium rounded-lg border border-gray-200 transition-all"
+                onClick={() => setIsEditing(true)}
+                className="px-4 py-2 bg-white cursor-pointer hover:bg-red-700 hover:text-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 shadow-sm transition-colors flex items-center gap-2"
               >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                onClick={handleSubmit(onSubmit)}
-                className="px-4 py-2 bg-white cursor-pointer hover:bg-rose-100 text-black text-sm font-medium rounded-lg shadow-sm transition-all"
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                </svg>
+                Edit Profile
+              </motion.button>
+            ) : (
+              <motion.div 
+                key="action-group"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="flex gap-2"
               >
-                Save Changes
-              </button>
-            </div>
-          )}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="px-4 py-2 bg-red-700 text-white cursor-pointer text-sm font-medium rounded-lg border border-gray-200 transition-colors"
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  onClick={handleSubmit(onSubmit)}
+                  className="px-4 py-2 bg-white cursor-pointer hover:bg-rose-100 text-black text-sm font-medium rounded-lg shadow-sm transition-colors"
+                >
+                  Save Changes
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Card className="p-6 md:p-8 bg-white border border-gray-100 shadow-sm rounded-2xl flex flex-col gap-8">
+          <Card className="p-6 md:p-8 bg-white border border-gray-100 shadow-sm rounded-2xl flex flex-col gap-8 overflow-hidden">
             <div>
               <h2 className="text-lg font-bold text-gray-800">Profile Details</h2>
               <p className="text-xs text-gray-400 mt-0.5">Manage your structural information and local records parameters.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-8">
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              layout="position"
+              className="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-8"
+            >
               {/* Full Name field */}
-              <div className="flex flex-col gap-1">
+              <motion.div variants={itemVariants} className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">Full Name</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    {...register("fullName", { required: "Name is required" })}
-                    className="w-full h-11 border border-gray-200 rounded-xl px-3 text-sm focus:outline-emerald-500"
-                  />
-                ) : (
-                  <span className="text-sm font-semibold text-gray-700 h-11 flex items-center">{formValues.fullName || "—"}</span>
-                )}
+                <AnimatePresence mode="wait">
+                  {isEditing ? (
+                    <motion.input
+                      key="input-fullname"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      type="text"
+                      {...register("fullName", { required: "Name is required" })}
+                      className="w-full h-11 border border-gray-200 rounded-xl px-3 text-sm focus:outline-emerald-500"
+                    />
+                  ) : (
+                    <motion.span key="text-fullname" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-semibold text-gray-700 h-11 flex items-center">
+                      {formValues.fullName || "—"}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
                 {errors.fullName && <p className="text-xs text-red-500 mt-0.5">{errors.fullName.message}</p>}
-              </div>
+              </motion.div>
 
               {/* Email Address Field */}
-              <div className="flex flex-col gap-1">
+              <motion.div variants={itemVariants} className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">Email</label>
                 <div className="h-11 flex items-center gap-2">
                   <span className="text-sm font-semibold text-gray-700">{formValues.email || "—"}</span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Phone Number Field */}
-              <div className="flex flex-col gap-1">
+              <motion.div variants={itemVariants} className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">Number</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    {...register("phoneNumber", { required: "Phone number is required" })}
-                    className="w-full h-11 border border-gray-200 rounded-xl px-3 text-sm focus:outline-emerald-500"
-                  />
-                ) : (
-                  <div className="h-11 flex items-center gap-2">
-                    <span className="text-sm font-semibold text-gray-700">{formValues.phoneNumber || "—"}</span>
-                  </div>
-                )}
+                <AnimatePresence mode="wait">
+                  {isEditing ? (
+                    <motion.input
+                      key="input-phone"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      type="text"
+                      {...register("phoneNumber", { required: "Phone number is required" })}
+                      className="w-full h-11 border border-gray-200 rounded-xl px-3 text-sm focus:outline-emerald-500"
+                    />
+                  ) : (
+                    <motion.div key="text-phone" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-11 flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-700">{formValues.phoneNumber || "—"}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 {errors.phoneNumber && <p className="text-xs text-red-500 mt-0.5">{errors.phoneNumber.message}</p>}
-              </div>
+              </motion.div>
 
               {/* District Select Input Node */}
-              <div className="flex flex-col gap-1">
+              <motion.div variants={itemVariants} className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">District</label>
-                {isEditing ? (
-                  <Select
-                    aria-label="District"
-                    placeholder="Select District"
-                    className="w-full"
-                    selectedKeys={watchDistrictId ? [watchDistrictId] : []}
-                    onSelectionChange={(keys) => {
-                      const val = Array.from(keys)[0]?.toString() || '';
-                      const selectedDistrict = DISTRICTS.find((dist) => dist.id === val);
-                      setValue('districtId', val, { shouldValidate: true });
-                      setValue('district', selectedDistrict?.name || '', { shouldValidate: true });
-                      setValue('upazilaId', '', { shouldValidate: true });
-                      setValue('upazila', '', { shouldValidate: true });
-                    }}
-                  >
-                    <Select.Trigger className="h-11 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left text-sm">
-                      <MapPin className="text-gray-400 w-4 h-4" />
-                      <Select.Value />
-                    </Select.Trigger>
-                    <Select.Popover>
-                      <ListBox>
-                        {DISTRICTS.map((dist) => (
-                          <ListBox.Item id={dist.id} key={dist.id} textValue={dist.name || dist.textValue}>
-                            {dist.name || dist.textValue}
-                          </ListBox.Item>
-                        ))}
-                      </ListBox>
-                    </Select.Popover>
-                  </Select>
-                ) : (
-                  <span className="text-sm font-semibold text-gray-700 h-11 flex items-center">{formValues.district || "—"}</span>
-                )}
+                <AnimatePresence mode="wait">
+                  {isEditing ? (
+                    <motion.div key="select-district" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                      <Select
+                        aria-label="District"
+                        placeholder="Select District"
+                        className="w-full"
+                        selectedKeys={watchDistrictId ? [watchDistrictId] : []}
+                        onSelectionChange={(keys) => {
+                          const val = Array.from(keys)[0]?.toString() || '';
+                          const selectedDistrict = DISTRICTS.find((dist) => dist.id === val);
+                          setValue('districtId', val, { shouldValidate: true });
+                          setValue('district', selectedDistrict?.name || '', { shouldValidate: true });
+                          setValue('upazilaId', '', { shouldValidate: true });
+                          setValue('upazila', '', { shouldValidate: true });
+                        }}
+                      >
+                        <Select.Trigger className="h-11 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left text-sm">
+                          <MapPin className="text-gray-400 w-4 h-4" />
+                          <Select.Value />
+                        </Select.Trigger>
+                        <Select.Popover>
+                          <ListBox>
+                            {DISTRICTS.map((dist) => (
+                              <ListBox.Item id={dist.id} key={dist.id} textValue={dist.name || dist.textValue}>
+                                {dist.name || dist.textValue}
+                              </ListBox.Item>
+                            ))}
+                          </ListBox>
+                        </Select.Popover>
+                      </Select>
+                    </motion.div>
+                  ) : (
+                    <motion.span key="text-district" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-semibold text-gray-700 h-11 flex items-center">
+                      {formValues.district || "—"}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
                 <input type="hidden" {...register("districtId", { required: 'District is required' })} />
                 {errors.districtId && <p className="text-xs text-red-500 mt-0.5">{errors.districtId.message}</p>}
-              </div>
+              </motion.div>
 
               {/* Dependent Upazila Input Select Node */}
-              <div className="flex flex-col gap-1">
+              <motion.div variants={itemVariants} className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">Upazila / City</label>
-                {isEditing ? (
-                  <Select
-                    aria-label="Upazila"
-                    placeholder={watchDistrictId ? "Select Upazila" : "Choose district first"}
-                    disabledKeys={!watchDistrictId ? ["disabled-state"] : []}
-                    className="w-full"
-                    selectedKeys={watch('upazilaId') ? [watch('upazilaId')] : []}
-                    onSelectionChange={(keys) => {
-                      const val = Array.from(keys)[0]?.toString() || '';
-                      const upazila = UPAZILAS.find((u) => u.id === val);
-                      setValue('upazilaId', val, { shouldValidate: true });
-                      setValue('upazila', upazila?.name || '', { shouldValidate: true });
-                    }}
-                  >
-                    <Select.Trigger
-                      className={`h-11 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left text-sm ${!watchDistrict ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}`}
-                    >
-                      <MapPin className="text-gray-400 w-4 h-4" />
-                      <Select.Value />
-                    </Select.Trigger>
-                    <Select.Popover>
-                      <ListBox>
-                        {watchDistrict ? (
-                          filteredUpazilas.map((up) => (
-                            <ListBox.Item id={up.id} key={up.id} textValue={up.name}>
-                              {up.name}
-                            </ListBox.Item>
-                          ))
-                        ) : (
-                          <ListBox.Item id="disabled-state" textValue="Choose district first">
-                            Choose district first
-                          </ListBox.Item>
-                        )}
-                      </ListBox>
-                    </Select.Popover>
-                  </Select>
-                ) : (
-                  <span className="text-sm font-semibold text-gray-700 h-11 flex items-center">{formValues.upazila || "—"}</span>
-                )}
+                <AnimatePresence mode="wait">
+                  {isEditing ? (
+                    <motion.div key="select-upazila" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                      <Select
+                        aria-label="Upazila"
+                        placeholder={watchDistrictId ? "Select Upazila" : "Choose district first"}
+                        disabledKeys={!watchDistrictId ? ["disabled-state"] : []}
+                        className="w-full"
+                        selectedKeys={watch('upazilaId') ? [watch('upazilaId')] : []}
+                        onSelectionChange={(keys) => {
+                          const val = Array.from(keys)[0]?.toString() || '';
+                          const upazila = UPAZILAS.find((u) => u.id === val);
+                          setValue('upazilaId', val, { shouldValidate: true });
+                          setValue('upazila', upazila?.name || '', { shouldValidate: true });
+                        }}
+                      >
+                        <Select.Trigger
+                          className={`h-11 border border-gray-200 rounded-xl px-3 flex items-center gap-2 bg-white w-full text-left text-sm ${!watchDistrict ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}`}
+                        >
+                          <MapPin className="text-gray-400 w-4 h-4" />
+                          <Select.Value />
+                        </Select.Trigger>
+                        <Select.Popover>
+                          <ListBox>
+                            {watchDistrict ? (
+                              filteredUpazilas.map((up) => (
+                                <ListBox.Item id={up.id} key={up.id} textValue={up.name}>
+                                  {up.name}
+                                </ListBox.Item>
+                              ))
+                            ) : (
+                              <ListBox.Item id="disabled-state" textValue="Choose district first">
+                                Choose district first
+                              </ListBox.Item>
+                            )}
+                          </ListBox>
+                        </Select.Popover>
+                      </Select>
+                    </motion.div>
+                  ) : (
+                    <motion.span key="text-upazila" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-semibold text-gray-700 h-11 flex items-center">
+                      {formValues.upazila || "—"}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
                 <input type="hidden" {...register("upazilaId", { required: 'Upazila is required' })} />
                 {errors.upazilaId && <p className="text-xs text-red-500 mt-0.5">{errors.upazilaId.message}</p>}
-              </div>
+              </motion.div>
 
               {/* User Account Role Type Field */}
-              <div className="flex flex-col gap-1">
+              <motion.div variants={itemVariants} className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-gray-400">Account Type</label>
                 <div className="h-11 flex items-center">
                   <span className="text-sm font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">
                     {formValues.role}
                   </span>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             <hr className="border-gray-100" />
 
             {/* Blood Group Grid UI Section */}
-            <div className="flex flex-col gap-3">
+            <motion.div layout="position" className="flex flex-col gap-3">
               <span className="text-sm font-bold text-gray-700">Blood Group Selection</span>
-              {isEditing ? (
-                <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-                  {BLOOD_GROUPS.map((group) => {
-                    const isSelected = watchBloodGroup === group;
-                    return (
-                      <button
-                        key={group}
-                        type="button"
-                        onClick={() => setValue('bloodGroup', group, { shouldValidate: true })}
-                        className={`h-11 rounded-xl font-bold border text-sm transition-all flex items-center justify-center
-                          ${isSelected
-                            ? 'border-red-700 bg-red-600 text-white shadow-sm'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                          }`}
-                      >
-                        {group}
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex">
-                  <span className="h-11 px-6 bg-red-50 text-red-600 font-extrabold text-base rounded-xl flex items-center justify-center border border-red-100 shadow-sm">
-                    {formValues.bloodGroup || "Not Provided"}
-                  </span>
-                </div>
-              )}
+              <AnimatePresence mode="wait">
+                {isEditing ? (
+                  <motion.div 
+                    key="blood-grid" 
+                    initial={{ opacity: 0, y: 10 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: -10 }} 
+                    className="grid grid-cols-4 sm:grid-cols-8 gap-2"
+                  >
+                    {BLOOD_GROUPS.map((group) => {
+                      const isSelected = watchBloodGroup === group;
+                      return (
+                        <motion.button
+                          key={group}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          type="button"
+                          onClick={() => setValue('bloodGroup', group, { shouldValidate: true })}
+                          className={`h-11 rounded-xl font-bold border text-sm transition-colors flex items-center justify-center
+                            ${isSelected
+                              ? 'border-red-700 bg-red-600 text-white shadow-sm'
+                              : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                            }`}
+                        >
+                          {group}
+                        </motion.button>
+                      );
+                    })}
+                  </motion.div>
+                ) : (
+                  <motion.div key="blood-badge" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex">
+                    <span className="h-11 px-6 bg-red-50 text-red-600 font-extrabold text-base rounded-xl flex items-center justify-center border border-red-100 shadow-sm">
+                      {formValues.bloodGroup || "Not Provided"}
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <input type="hidden" {...register("bloodGroup", { required: 'Blood Group is required' })} />
               {errors.bloodGroup && <p className="text-xs text-red-500 mt-1">{errors.bloodGroup.message}</p>}
-            </div>
+            </motion.div>
           </Card>
         </form>
       </div>
@@ -395,4 +469,4 @@ const DonorProfile = () => {
   );
 };
 
-export default DonorProfile;
+export default AdminProfile;

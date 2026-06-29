@@ -11,17 +11,25 @@ import DashboardHeading from '@/components/DashboardHeading';
 import RequestTable from './my-request/RequestTable';
 
 const DonorDashboardPage = async () => {
+ 
+
+ 
   const session = await auth.api.getSession({
     headers: await headers()
   });
 
-  const allRequests = await myRequest(session?.user?.email) || [];
-
-  // 1. Sort by date (newest first) assuming you have a 'createdAt' or 'date' field
-  const sortedRequests = allRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  // 2. Slice to get maximum 3 recent items
+  const requestResponse = await myRequest(session?.user?.email);
+  const allRequests = requestResponse?.data || [];
+ const sortedRequests = [...allRequests].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const recentRequests = sortedRequests.slice(0, 3);
+  // console.log(recentRequests);
+
+  // const allRequests = await myRequest(session?.user?.email) || [];
+  // // 1. Sort by date (newest first) assuming you have a 'createdAt' or 'date' field
+  // const sortedRequests = allRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  // // 2. Slice to get maximum 3 recent items
+  // const recentRequests = sortedRequests.slice(0, 3);
 
   return (
     // Added progressive layout padding across mobile, tablet, and desktop

@@ -36,9 +36,16 @@ export default function Footer() {
           {/* RIGHT SIDE: TEXT COLUMNS */}
           <div className="md:col-span-7 w-full">
             {/* Large Brand Title */}
-            <h2 className="text-4xl font-normal tracking-tight mb-10 text-left">
-              ClosetNow
-            </h2>
+            <Link href={'/'} className="flex items-center gap-2 group">
+            {/* Modern Drop/Bridge Icon */}
+           
+
+            {/* Typographic Logo */}
+            <div className="font-sans tracking-tight text-white">
+              <span className="text-xl font-extrabold tracking-wide">BLOOD</span>
+              <span className="text-xl font-light text-white/90">BRIDGE</span>
+            </div>
+          </Link>
 
             {/* Links Columns Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-left">
@@ -46,9 +53,9 @@ export default function Footer() {
               <div>
                 <h3 className="text-base font-medium mb-4 text-white/90">About Us</h3>
                 <div className="flex flex-col gap-2 text-xs text-rose-200/60 font-light">
-                  <Link href="/mission" className="hover:text-white transition">Mission</Link>
-                  <Link href="/team" className="hover:text-white transition">Team</Link>
-                  <Link href="/newsletter" className="hover:text-white transition">Newsletter</Link>
+                  <Link href="/" className="hover:text-white transition">Home</Link>
+                  <Link href="/requests" className="hover:text-white transition">Donations</Link>
+                  <Link href="/" className="hover:text-white transition"> Donate</Link>
                 </div>
               </div>
 
@@ -56,9 +63,9 @@ export default function Footer() {
               <div>
                 <h3 className="text-base font-medium mb-4 text-white/90">Support</h3>
                 <div className="flex flex-col gap-2 text-xs text-rose-200/60 font-light">
-                  <Link href="/contact" className="hover:text-white transition">Contact</Link>
-                  <Link href="/refund-policy" className="hover:text-white transition">Refund Policy</Link>
-                  <Link href="/faq" className="hover:text-white transition">FAQ&apos;s</Link>
+                  <Link href="/" className="hover:text-white transition">Contact</Link>
+                  <Link href="/" className="hover:text-white transition">Find US</Link>
+                  <Link href="/" className="hover:text-white transition">FAQ&apos;s</Link>
                 </div>
               </div>
 
@@ -66,9 +73,10 @@ export default function Footer() {
               <div className="col-span-2 sm:col-span-1">
                 <h3 className="text-base font-medium mb-4 text-white/90">Social</h3>
                 <div className="flex flex-col gap-2 text-xs text-rose-200/60 font-light">
-                  <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-white transition">Instagram</a>
+                  <a href="https://github.com/JannatRahman"
+                 rel="noreferrer" className="hover:text-white transition">Github</a>
                   <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white transition">LinkedIn</a>
-                  <a href="https://youtube.com" target="_blank" rel="noreferrer" className="hover:text-white transition">YouTube</a>
+                  <a href="https://www.linkedin.com/in/jannat-amila-rahman/"  rel="noreferrer" className="hover:text-white transition">YouTube</a>
                 </div>
               </div>
             </div>

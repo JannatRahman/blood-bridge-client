@@ -115,7 +115,7 @@ const CardDetailsPage = ({ donation }) => {
         </div>
 
         {/* CTA */}
-        {donation?.status === "Pending" && (
+        {donation?.status.toLowerCase() === "pending" && (
           <div className="p-8 border-t">
             <DonateModal donation={donation} />
           </div>

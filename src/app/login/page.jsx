@@ -19,7 +19,9 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
       });
-      console.log(signInData, signInError, 'data')
+      // console.log(signInData, signInError, 'data')
+ 
+
 
       if (signInError) {
         toast.error('Login failed')
@@ -30,6 +32,7 @@ export default function LoginPage() {
       redirect('/')
     }
   };
+
 
   const handleGoogle = async () => {
     await authClient.signIn.social({
