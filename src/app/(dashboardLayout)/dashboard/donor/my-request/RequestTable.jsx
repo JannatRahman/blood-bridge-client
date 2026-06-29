@@ -2,6 +2,7 @@
 import DeleteRequestModal from '@/components/DeleteRequestModal';
 import EditRequestModal from '@/components/EditRequestModal';
 import { baseUrl } from '@/lib/api/baseUrl';
+import { authHeader } from '@/lib/api/server';
 import { Button, Card, Chip, Pagination, Table, TableBody, TableCell, TableColumn, TableContent, TableHeader, TableRow } from '@heroui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -15,7 +16,7 @@ const RequestTable = ({ request = [], onUpdateStatus }) => {
   const page = request?.page || 1;
   const totalPages = request?.totalPage || 1;
   const pages = [];
- const router = useRouter()
+  const router = useRouter()
   for (let i = 1; i <= totalPages; i++) {
     pages.push(i);
   }
@@ -39,35 +40,36 @@ const RequestTable = ({ request = [], onUpdateStatus }) => {
 
   // Handler for updating status directly from the action row (Inprogress -> Done / Cancelled)
   const handleStatusChange = async (id, newStatus) => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/status/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ status: newStatus }), // Send the status to the backend
-    });
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/status/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(await authHeader())
+        },
+        body: JSON.stringify({ status: newStatus }), // Send the status to the backend
+      });
 
-    if (!res.ok) {
-      throw new Error(`Failed to update status: ${res.statusText}`);
+      if (!res.ok) {
+        throw new Error(`Failed to update status: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      if (data.modifiedCount > 0) {
+        toast.success('Status changed successfully')
+        router.refresh()
+
+      }
+      console.log("Status updated successfully:", data);
+
+      // Call your refresh or update state function here
+      if (onUpdateStatus) {
+        onUpdateStatus(id, newStatus);
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
     }
-
-    const data = await res.json();
-    if(data.modifiedCount > 0){
-      toast.success('Status changed successfully')
-      router.refresh()
-
-    }
-    console.log("Status updated successfully:", data);
-
-    // Call your refresh or update state function here
-    if (onUpdateStatus) {
-      onUpdateStatus(id, newStatus);
-    }
-  } catch (error) {
-    console.error("Error updating status:", error);
-  }
-};
+  };
 
   return (
     <div>
@@ -184,13 +186,16 @@ const RequestTable = ({ request = [], onUpdateStatus }) => {
                             {status === "pending" && (
                               <>
                                 {/* Redirects to Edit Page per guidelines */}
+                                {/* Triggers the Edit Request Modal */}
                                 <Button
-                                  as={Link}
-                                  href={`/dashboard/donor/my-request/edit/${req._id}`}
                                   isIconOnly
                                   size="sm"
                                   radius="md"
                                   className="h-8 w-8 border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/30 transition-all"
+                                  onPress={() => {
+                                    setEditingRequest(req);
+                                    setIsModalOpen(true);
+                                  }}
                                 >
                                   <FaEdit size={12} />
                                 </Button>
@@ -209,18 +214,18 @@ const RequestTable = ({ request = [], onUpdateStatus }) => {
                             )}
 
                             {/* ALWAYS AVAILABLE: View Details Button */}
-                           <Link href={`/requests/${req._id}`}>
-                            <Button
-                              as={Link}
-                            
-                              isIconOnly
-                              size="sm"
-                              radius="md"
-                              className="h-8 w-8 border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/30 transition-all"
-                            >
-                              <FaEye size={12} />
-                            </Button>
-                           </Link>
+                            <Link href={`/requests/${req._id}`}>
+                              <Button
+                                as={Link}
+
+                                isIconOnly
+                                size="sm"
+                                radius="md"
+                                className="h-8 w-8 border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/30 transition-all"
+                              >
+                                <FaEye size={12} />
+                              </Button>
+                            </Link>
 
                           </div>
                         </TableCell>

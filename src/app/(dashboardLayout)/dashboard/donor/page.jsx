@@ -21,15 +21,9 @@ const DonorDashboardPage = async () => {
   const requestResponse = await myRequest(session?.user?.email);
   const allRequests = requestResponse?.data || [];
  const sortedRequests = [...allRequests].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  const recentRequests = sortedRequests.slice(0, 3);
-  // console.log(recentRequests);
-
-  // const allRequests = await myRequest(session?.user?.email) || [];
-  // // 1. Sort by date (newest first) assuming you have a 'createdAt' or 'date' field
-  // const sortedRequests = allRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  // // 2. Slice to get maximum 3 recent items
-  // const recentRequests = sortedRequests.slice(0, 3);
+  const recentRequests = sortedRequests?.slice(0, 3);
+  console.log(session);
+  
 
   return (
     // Added progressive layout padding across mobile, tablet, and desktop

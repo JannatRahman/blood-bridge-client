@@ -7,6 +7,8 @@ const client = new MongoClient(process.env.MONGO_DB_URI);
 const db = client.db(process.env.DB_NAME);
 
 export const auth = betterAuth({
+  trustedOrigins: [process.env.BETTER_AUTH_URL],
+  baseURL: process.env.BETTER_AUTH_URL,
   database: mongodbAdapter(db, {
     client,
   }),
@@ -18,14 +20,14 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      defaultValue: 'donor'
+      defaultValue: 'Donor'
     }
   },
   user: {
     additionalFields: {
       role: {
         type: "string",
-        defaultValue: 'donor'
+        defaultValue: 'Donor'
       },
       isBlocked: {
         type: "boolean",

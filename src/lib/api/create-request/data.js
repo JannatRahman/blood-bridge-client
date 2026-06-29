@@ -1,14 +1,14 @@
-import { protectedFetch, serverFetch } from "../server"
+import { protectedFetch, serverFetch} from "../server"
 
 export const myRequest = async (email, page) => {
   const result = await protectedFetch(`/api/my-request/${email}?page=${page}`);
-  console.log(result);
+ 
   return result;
 };
 
 
 export const fetchDonationData = async (query) => {
-  const result = await protectedFetch(`/api/donation-request?${query.toString()}`);
+  const result = await serverFetch(`/api/donation-request?${query.toString()}`);
   return result;
 }
 
@@ -20,7 +20,7 @@ export const filterRequest = async (bloodGroup, recipientDistrict, recipientUpaz
     recipientUpazila: recipientUpazila || ''
   });
 
-  const result = await serverFetch(`/api/filter-request?${params.toString()}`);
+  const result = await protectedFetch(`/api/filter-request?${params.toString()}`);
   console.log(result);
   return result;
 };

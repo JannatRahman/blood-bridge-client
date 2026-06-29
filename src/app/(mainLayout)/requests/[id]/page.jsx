@@ -1,9 +1,11 @@
 import CardDetailsPage from '@/components/CardDetailsPage';
 import { baseUrl } from '@/lib/api/baseUrl';
+import { authHeader } from '@/lib/api/server';
 
 const fetchDonation = async (id) => {
   const res = await fetch(`${baseUrl}/api/single-request/${id}`, {
     cache: "no-store",
+    headers: await authHeader()
   });
 
   return res.json();

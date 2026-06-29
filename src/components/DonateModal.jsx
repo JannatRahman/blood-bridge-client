@@ -1,6 +1,7 @@
 "use client";
 
 import { baseUrl } from "@/lib/api/baseUrl";
+import { authHeader } from "@/lib/api/server";
 // 1. FIX: Import authClient directly so authClient.useSession() is valid
 import { authClient } from "@/lib/auth-client";
 import {
@@ -36,6 +37,7 @@ const DonateModal = ({ donation }) => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          ...(await authHeader())
         },
         body: JSON.stringify(donationInfo),
       });

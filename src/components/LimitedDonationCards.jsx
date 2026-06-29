@@ -7,7 +7,7 @@ const LimitedDonationCards = async () => {
   const donations = await fetchDonationData("");
 
   // Grab only the first 6 items from the array safely
-  const limitedDonations = donations ? donations.slice(0, 6) : [];
+  const limitedDonations = donations ? donations?.slice(0, 6) : [];
 
   return (
     <section className="  w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
