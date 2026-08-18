@@ -10,6 +10,11 @@ import { auth } from '@/lib/auth';
 import DashboardHeading from '@/components/DashboardHeading';
 import RequestTable from './my-request/RequestTable';
 
+export const metadata = {
+  title: "BLood Bridge | Donor",
+  
+};
+
 const DonorDashboardPage = async () => {
  
 

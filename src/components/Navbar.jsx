@@ -101,52 +101,57 @@ export default function Navbar() {
           )}
 
           {session && session?.user && (
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center transition-transform hover:scale-105 outline-none focus:outline-none cursor-pointer"
-              >
-                <p className="p-3 text-white text-xs">Welcome, {session.user.name}</p>
-                <Image
-                  width={36}
-                  height={36}
-                  className="w-9 h-9 rounded-full object-cover border border-white/20 shadow-md"
-                  src={session.user.image || "/fallback-avatar.png"}
-                  alt="avatar"
-                />
-              </button>
-
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-3 w-56 border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl py-2 z-50" style={{ backgroundColor: '#610808' }}>
-                  <div className="px-4 py-2.5 border-b border-white/10 mb-1.5 cursor-default">
-                    <p className="text-[10px] text-rose-300 font-bold uppercase tracking-wider">
-                      {session.user.role} Account
-                    </p>
-                    <p className="font-bold text-white text-sm mt-0.5">{session.user.name}</p>
-                    <p className="text-[11px] text-rose-200/70 truncate mt-0.5">{session.user.email}</p>
-                  </div>
-
-                  <Link
-                    href={`/dashboard/${session.user.role.toLowerCase()}`}
-                    onClick={() => setDropdownOpen(false)}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-100 hover:text-white hover:bg-white/10 transition"
-                  >
-                    <FaThLarge className="text-rose-300 text-sm shrink-0" />
-                    <span>My Dashboard</span>
-                  </Link>
-
-                  <div className="border-t border-white/10 my-1.5" />
-
+            (() => {
+              const userRole = session.user.role || 'Donor';
+              return (
+                <div className="relative" ref={dropdownRef}>
                   <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-200 hover:text-white hover:bg-red-500/20 transition cursor-pointer"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center transition-transform hover:scale-105 outline-none focus:outline-none cursor-pointer"
                   >
-                    <FaSignOutAlt className="text-sm shrink-0" />
-                    <span>Log Out</span>
+                    <p className="p-3 text-white text-xs">Welcome, {session.user.name}</p>
+                    <Image
+                      width={36}
+                      height={36}
+                      className="w-9 h-9 rounded-full object-cover border border-white/20 shadow-md"
+                      src={session.user.image || "/fallback-avatar.png"}
+                      alt="avatar"
+                    />
                   </button>
+
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-3 w-56 border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl py-2 z-50" style={{ backgroundColor: '#610808' }}>
+                      <div className="px-4 py-2.5 border-b border-white/10 mb-1.5 cursor-default">
+                        <p className="text-[10px] text-rose-300 font-bold uppercase tracking-wider">
+                          {userRole} Account
+                        </p>
+                        <p className="font-bold text-white text-sm mt-0.5">{session.user.name}</p>
+                        <p className="text-[11px] text-rose-200/70 truncate mt-0.5">{session.user.email}</p>
+                      </div>
+
+                      <Link
+                        href={`/dashboard/${userRole.toLowerCase()}`}
+                        onClick={() => setDropdownOpen(false)}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-100 hover:text-white hover:bg-white/10 transition"
+                      >
+                        <FaThLarge className="text-rose-300 text-sm shrink-0" />
+                        <span>My Dashboard</span>
+                      </Link>
+
+                      <div className="border-t border-white/10 my-1.5" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-semibold text-rose-200 hover:text-white hover:bg-red-500/20 transition cursor-pointer"
+                      >
+                        <FaSignOutAlt className="text-sm shrink-0" />
+                        <span>Log Out</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()
           )}
         </div>
 
@@ -184,7 +189,7 @@ export default function Navbar() {
 
           {session && session?.user && (
             <Link
-              href={`/dashboard/${session.user.role.toLowerCase()}`}
+              href={`/dashboard/${(session.user.role || 'Donor').toLowerCase()}`}
               onClick={() => setMobileMenuOpen(false)}
               className={`px-4 py-2 rounded-xl text-sm ${pathname.startsWith("/dashboard") ? "bg-white/15 text-white" : "text-rose-200/80"}`}
             >

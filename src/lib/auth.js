@@ -20,7 +20,25 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      defaultValue: 'Donor'
+      mapProfileToUser: async (profile) => {
+        return {
+          role: 'Donor',
+        };
+      },
+    }
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          return {
+            data: {
+              ...user,
+              role: user.role || 'Donor',
+            }
+          };
+        }
+      }
     }
   },
   user: {

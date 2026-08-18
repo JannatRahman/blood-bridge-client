@@ -9,7 +9,14 @@ export const getUser = async () => {
   })
   
 
-  return session?.user || null;
+  if (session?.user) {
+    return {
+      ...session.user,
+      role: session.user.role || 'Donor'
+    };
+  }
+
+  return null;
 }
 export const getUserToken = async () => {
    const session = await auth.api.getSession({
@@ -23,9 +30,9 @@ export const getUserToken = async () => {
 export const roleValidator = async (role) => {
 
   const user = await getUser();
-  // console.log(role, user?.role)
+  const userRole = user?.role || 'Donor';
 
-  if(!user || user.role !== role) {
+  if (!user || userRole.toLowerCase() !== role.toLowerCase()) {
     redirect('/unauthorized')
   }
 }

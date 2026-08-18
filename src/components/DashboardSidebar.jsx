@@ -43,16 +43,14 @@ const DashboardSidebar = () => {
     { key: "public-request", label: "Public Request", icon: MdOutlinePublic, href: '/dashboard/admin/public-request' },
   ];
 
-  const role = session?.user?.role;
-  const normalizedRole = role ? role.toLowerCase() : '';
+  const role = session?.user?.role || 'Donor';
+  const normalizedRole = role.toLowerCase();
 
   const menuItems = normalizedRole === 'volunteer'
     ? volunteerMenu
-    : normalizedRole === 'donor'
-      ? donorMenu
-      : normalizedRole === 'admin'
-        ? adminMenu
-        : [];
+    : normalizedRole === 'admin'
+      ? adminMenu
+      : donorMenu;
 
   const renderSidebarContent = () => (
     <div className="h-full flex flex-col bg-[#7D0A0A] backdrop-blur-xl">

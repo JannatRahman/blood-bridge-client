@@ -6,6 +6,8 @@ import { BiDollar } from "react-icons/bi";
 import { motion } from "framer-motion";
 import DashboardHeading from "@/components/DashboardHeading";
 
+
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000';
 
 // Animation configs
