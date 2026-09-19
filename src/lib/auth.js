@@ -7,7 +7,12 @@ const client = new MongoClient(process.env.MONGO_DB_URI);
 const db = client.db(process.env.DB_NAME);
 
 export const auth = betterAuth({
-  trustedOrigins: [process.env.BETTER_AUTH_URL],
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL,
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://blood-bridge-client-five.vercel.app"
+  ],
   baseURL: process.env.BETTER_AUTH_URL,
   database: mongodbAdapter(db, {
     client,

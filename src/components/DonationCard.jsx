@@ -82,13 +82,10 @@ export default function DonationCard({ donation }) {
       {/* Footer */}
       <div className="p-4 sm:p-5 border-t border-gray-100">
         <Link href={`/requests/${currentDonation._id}`}>
-          <button className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-gray-50 hover:bg-rose-50 text-gray-900 font-semibold transition-all
-        bg-rose-100
-        duration-300 group-hover:border-rose-200">
-            <span>View Details</span>
-
-            <div className="w-10 h-10 rounded-xl  shadow-sm flex items-center bg-rose-100 cursor-pointer justify-center group-hover:bg-[#7D0A0A] group-hover:text-white transition-all duration-300">
-              <ArrowRight size={18} />
+          <button className="w-full flex items-center justify-between px-5 py-3.5 rounded-2xl bg-rose-50 hover:bg-[#7D0A0A] text-[#7D0A0A] hover:text-white font-bold text-sm transition-all duration-300 cursor-pointer shadow-sm group/btn">
+            <span>View Details & Donate</span>
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-[#7D0A0A] text-white group-hover/btn:bg-white group-hover/btn:text-[#7D0A0A] transition-all duration-300">
+              <ArrowRight size={16} />
             </div>
           </button>
         </Link>

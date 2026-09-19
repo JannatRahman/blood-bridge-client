@@ -28,11 +28,16 @@ export const getUserToken = async () => {
 // console.log('session', session);
 
 export const roleValidator = async (role) => {
-
   const user = await getUser();
-  const userRole = user?.role || 'Donor';
 
-  if (!user || userRole.toLowerCase() !== role.toLowerCase()) {
-    redirect('/unauthorized')
+  if (!user) {
+    redirect('/login');
+  }
+
+  const userRole = (user.role || 'Donor').toLowerCase();
+  const requiredRole = role.toLowerCase();
+
+  if (userRole !== requiredRole) {
+    redirect(`/dashboard/${userRole}`);
   }
 }

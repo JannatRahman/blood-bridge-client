@@ -147,12 +147,14 @@ export default function Banner() {
           {/* CTA Buttons with micro-interactions */}
           <motion.div variants={itemVariants} className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
-              <Button
-                className="w-full h-12 sm:h-14 px-8 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-2xl shadow-lg shadow-red-500/30 transition-all duration-300"
-                endContent={<FiArrowRight />}
-              >
-                Become a Donor
-              </Button>
+              <Link href="/register" className="w-full block">
+                <Button
+                  className="w-full h-12 sm:h-14 px-8 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-2xl shadow-lg shadow-red-500/30 transition-all duration-300"
+                  endContent={<FiArrowRight />}
+                >
+                  Become a Donor
+                </Button>
+              </Link>
             </motion.div>
 
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">

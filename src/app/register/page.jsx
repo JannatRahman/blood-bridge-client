@@ -204,7 +204,8 @@ export default function RegistrationForm() {
   };
   const handleGoogle = async () => {
     await authClient.signIn.social({
-      provider: 'google'
+      provider: 'google',
+      callbackURL: '/dashboard'
     })
   }
 
