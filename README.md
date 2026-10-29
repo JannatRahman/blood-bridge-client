@@ -6,7 +6,7 @@
 
 ## 🔗 Deployments & Credentials
 
-* **Production Live Application:** `[Insert Frontend Live URL]`
+* **Production Live Application:** `[[Insert Frontend Live URL](https://blood-bridge-client-five.vercel.app/)]`
 * **Client GitHub Repository:** `[Insert Client GitHub URL]`
 * **Server GitHub Repository:** `[Insert Server GitHub URL]`
 
